@@ -63,6 +63,19 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Ro
 .page-sub{font-size:12px;color:var(--text3);margin-top:1px}
 .topbar-actions{display:flex;align-items:center;gap:8px}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-family:inherit;transition:background .15s}
+.gdrive-btn{position:relative}
+.gdrive-btn.gdrive-off{color:var(--text2)}
+.gdrive-btn.gdrive-synced{color:var(--success);border-color:var(--success)}
+.gdrive-btn.gdrive-syncing,.gdrive-btn.gdrive-connecting{color:var(--accent);border-color:var(--accent)}
+.gdrive-btn.gdrive-error{color:var(--danger);border-color:var(--danger)}
+.gdrive-btn .ti-loader-2,.gdrive-btn .ti-cloud-up{animation:gdrive-spin 1s linear infinite}
+@keyframes gdrive-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.gdrive-mob{font-size:16px;cursor:pointer}
+.gdrive-mob.gdrive-off{color:var(--text3)}
+.gdrive-mob.gdrive-synced{color:var(--success)}
+.gdrive-mob.gdrive-syncing,.gdrive-mob.gdrive-connecting{color:var(--accent);animation:gdrive-spin 1s linear infinite}
+.gdrive-mob.gdrive-error{color:var(--danger)}
+@media(max-width:768px){.gdrive-label{display:none}}
 .btn:hover{background:var(--bg)}
 .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .btn-primary:hover{background:#0C4A8A}
@@ -225,13 +238,15 @@ tr:hover td{background:var(--bg)}
     <header class="topbar">
       <div><div class="page-title" id="page-title">Painel geral</div><div class="page-sub" id="page-sub">Visão consolidada do negócio</div></div>
       <div class="topbar-actions">
+        <button class="btn gdrive-btn gdrive-off" id="gdrive-status" onclick="gdriveButtonClick()" title="Sincronização com Google Drive"><i class="ti ti-cloud-off" style="font-size:14px" aria-hidden="true"></i><span class="gdrive-label">Conectar Google Drive</span></button>
         <button class="btn" onclick="exportData()"><i class="ti ti-download" style="font-size:14px" aria-hidden="true"></i>Exportar</button>
         <button class="btn btn-primary" onclick="openFab()" id="desk-add-btn"><i class="ti ti-plus" style="font-size:14px" aria-hidden="true"></i><span id="desk-add-label">Novo lançamento</span></button>
       </div>
     </header>
     <header class="mobile-topbar">
       <div><div style="font-size:15px;font-weight:600" id="mob-title">Painel</div><div style="font-size:11px;color:var(--text3)" id="mob-date"></div></div>
-      <div style="display:flex;align-items:center;gap:8px">
+      <div style="display:flex;align-items:center;gap:14px">
+        <i class="ti ti-cloud-off gdrive-mob gdrive-off" id="gdrive-status-mobile" onclick="gdriveButtonClick()" title="Sincronização com Google Drive" aria-hidden="true"></i>
         <button class="btn" style="padding:6px 10px" onclick="exportData()"><i class="ti ti-download" style="font-size:13px" aria-hidden="true"></i></button>
         <div class="avatar">ED</div>
       </div>
@@ -318,7 +333,13 @@ const S = {
   sortEstoque:{col:'produto',dir:1},
 };
 
-function save(){try{localStorage.setItem('p3d_v2',JSON.stringify(S));}catch(e){}}
+function save(){
+  try{
+    localStorage.setItem('p3d_v2',JSON.stringify(S));
+    gdriveSaveMeta({updatedAt:new Date().toISOString()});
+  }catch(e){}
+  gdriveQueuePush();
+}
 function load(){
   try{
     const d=localStorage.getItem('p3d_v2');
@@ -361,6 +382,200 @@ function load(){
   }catch(e){ console.warn('Erro ao carregar dados:', e); }
 }
 load();
+
+// ══════════════════════════════════════════════
+// ══ SINCRONIZAÇÃO COM GOOGLE DRIVE (appData) ══
+// ══════════════════════════════════════════════
+const GDRIVE_CLIENT_ID='667059652451-lpo17irba19url3uf4ulnlh8kb5okqkj.apps.googleusercontent.com';
+const GDRIVE_SCOPE='https://www.googleapis.com/auth/drive.appdata';
+const GDRIVE_FILENAME='crm_data.json';
+let gdriveTokenClient=null, gdriveAccessToken=null, gdriveTokenExpiry=0, gdriveFileId=null, gdriveSignedIn=false, gdrivePushTimer=null, gdriveBusy=false;
+
+function gdriveLoadMeta(){ try{ return JSON.parse(localStorage.getItem('p3d_v2_meta')||'{}'); }catch(e){ return {}; } }
+function gdriveSaveMeta(meta){ try{ localStorage.setItem('p3d_v2_meta', JSON.stringify(meta)); }catch(e){} }
+
+function gdriveSetStatus(status, msg){
+  const icons={off:'ti-cloud-off',connecting:'ti-loader-2',synced:'ti-cloud-check',syncing:'ti-cloud-up',error:'ti-cloud-x'};
+  const labels={off:'Conectar Google Drive',connecting:'Conectando...',synced:'Sincronizado',syncing:'Sincronizando...',error:'Erro de sync'};
+  const icon=icons[status]||icons.off, label=msg||labels[status]||'';
+  const el=document.getElementById('gdrive-status');
+  if(el){ el.innerHTML=`<i class="ti ${icon}" style="font-size:14px" aria-hidden="true"></i><span class="gdrive-label">${label}</span>`; el.className='btn gdrive-btn gdrive-'+status; el.title=label; }
+  const elm=document.getElementById('gdrive-status-mobile');
+  if(elm){ elm.className='ti '+icon+' gdrive-mob gdrive-'+status; elm.title=label; }
+}
+
+function gdriveInit(){
+  if(!window.google || !google.accounts){ setTimeout(gdriveInit,300); return; }
+  gdriveTokenClient=google.accounts.oauth2.initTokenClient({
+    client_id:GDRIVE_CLIENT_ID,
+    scope:GDRIVE_SCOPE,
+    callback:async(resp)=>{
+      if(resp.error){ gdriveSetStatus('error','Login cancelado ou falhou'); return; }
+      gdriveAccessToken=resp.access_token;
+      gdriveTokenExpiry=Date.now()+(resp.expires_in*1000-60000);
+      gdriveSignedIn=true;
+      localStorage.setItem('p3d_v2_gdrive_on','1');
+      gdriveSetStatus('connecting','Verificando nuvem...');
+      await gdriveSyncOnConnect();
+    }
+  });
+  if(localStorage.getItem('p3d_v2_gdrive_on')==='1'){
+    gdriveSetStatus('connecting','Conectando...');
+    gdriveTokenClient.requestAccessToken({prompt:''});
+  } else {
+    gdriveSetStatus('off');
+  }
+}
+
+function gdriveButtonClick(){
+  if(gdriveSignedIn){
+    if(confirm('Desconectar a sincronização com o Google Drive neste dispositivo?')) gdriveDisconnect();
+    return;
+  }
+  if(!gdriveTokenClient){ toast('Carregando Google, aguarde um instante...','warn'); return; }
+  gdriveTokenClient.requestAccessToken({prompt:'consent'});
+}
+
+function gdriveDisconnect(){
+  gdriveSignedIn=false; gdriveAccessToken=null; gdriveFileId=null;
+  localStorage.removeItem('p3d_v2_gdrive_on');
+  gdriveSetStatus('off');
+  toast('Google Drive desconectado neste dispositivo.','warn');
+}
+
+function gdriveEnsureToken(){
+  if(gdriveAccessToken && Date.now()<gdriveTokenExpiry) return Promise.resolve(true);
+  if(!gdriveTokenClient) return Promise.resolve(false);
+  return new Promise((resolve)=>{
+    const prevCb=gdriveTokenClient.callback;
+    gdriveTokenClient.callback=(resp)=>{
+      gdriveTokenClient.callback=prevCb;
+      if(resp.error){ resolve(false); return; }
+      gdriveAccessToken=resp.access_token;
+      gdriveTokenExpiry=Date.now()+(resp.expires_in*1000-60000);
+      gdriveSignedIn=true;
+      resolve(true);
+    };
+    gdriveTokenClient.requestAccessToken({prompt:''});
+  });
+}
+
+async function gdriveFindFile(){
+  const res=await fetch(`https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name%3D%27${GDRIVE_FILENAME}%27&fields=files(id,modifiedTime)`,{headers:{Authorization:'Bearer '+gdriveAccessToken}});
+  if(!res.ok) throw new Error('Falha ao buscar arquivo no Drive');
+  const data=await res.json();
+  return (data.files && data.files[0]) || null;
+}
+
+async function gdriveDownload(fileId){
+  const res=await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,{headers:{Authorization:'Bearer '+gdriveAccessToken}});
+  if(!res.ok) throw new Error('Falha ao baixar dados do Drive');
+  return await res.json();
+}
+
+async function gdriveUpload(fileId, payload){
+  const body=JSON.stringify(payload);
+  if(fileId){
+    const res=await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`,{method:'PATCH',headers:{Authorization:'Bearer '+gdriveAccessToken,'Content-Type':'application/json'},body});
+    if(!res.ok) throw new Error('Falha ao enviar dados ao Drive');
+    return await res.json();
+  }
+  const metadata={name:GDRIVE_FILENAME,parents:['appDataFolder']};
+  const boundary='p3dcrmboundary';
+  const multipartBody=`--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n`+
+    `--${boundary}\r\nContent-Type: application/json\r\n\r\n${body}\r\n--${boundary}--`;
+  const res=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{Authorization:'Bearer '+gdriveAccessToken,'Content-Type':`multipart/related; boundary=${boundary}`},body:multipartBody});
+  if(!res.ok) throw new Error('Falha ao criar arquivo no Drive');
+  return await res.json();
+}
+
+async function gdriveSyncOnConnect(){
+  if(gdriveBusy) return; gdriveBusy=true;
+  try{
+    const ok=await gdriveEnsureToken();
+    if(!ok){ gdriveSetStatus('error','Não autorizado'); gdriveBusy=false; return; }
+    const file=await gdriveFindFile();
+    const meta=gdriveLoadMeta();
+    if(file){
+      gdriveFileId=file.id;
+      const cloudTime=new Date(file.modifiedTime).getTime();
+      const localTime=meta.updatedAt?new Date(meta.updatedAt).getTime():0;
+      if(cloudTime>localTime){
+        const cloudData=await gdriveDownload(file.id);
+        Object.assign(S, cloudData);
+        localStorage.setItem('p3d_v2', JSON.stringify(S));
+        gdriveSaveMeta({updatedAt:file.modifiedTime});
+        render();
+        toast('Dados sincronizados da nuvem ☁️');
+      } else if(localTime>cloudTime){
+        await gdrivePush(true);
+      }
+    } else {
+      await gdrivePush(true);
+    }
+    gdriveSetStatus('synced');
+  }catch(e){
+    console.warn('Erro de sincronização inicial:', e);
+    gdriveSetStatus('error','Erro ao sincronizar');
+  }
+  gdriveBusy=false;
+}
+
+function gdriveQueuePush(){
+  if(!gdriveSignedIn) return;
+  clearTimeout(gdrivePushTimer);
+  gdriveSetStatus('syncing');
+  gdrivePushTimer=setTimeout(()=>gdrivePush(false), 2500);
+}
+
+async function gdrivePush(silent){
+  if(!gdriveSignedIn) return;
+  try{
+    const ok=await gdriveEnsureToken();
+    if(!ok){ gdriveSetStatus('error','Sessão expirada'); return; }
+    if(!gdriveFileId){
+      const file=await gdriveFindFile();
+      if(file) gdriveFileId=file.id;
+    }
+    const result=await gdriveUpload(gdriveFileId, S);
+    gdriveFileId=result.id||gdriveFileId;
+    gdriveSaveMeta({updatedAt:new Date().toISOString()});
+    gdriveSetStatus('synced');
+  }catch(e){
+    console.warn('Erro ao enviar para nuvem:', e);
+    gdriveSetStatus('error','Erro ao enviar');
+  }
+}
+
+async function gdriveCheckRemote(){
+  if(!gdriveSignedIn || gdriveBusy) return;
+  try{
+    const ok=await gdriveEnsureToken();
+    if(!ok) return;
+    if(!gdriveFileId){
+      const file=await gdriveFindFile();
+      if(!file) return;
+      gdriveFileId=file.id;
+    }
+    const res=await fetch(`https://www.googleapis.com/drive/v3/files/${gdriveFileId}?fields=modifiedTime`,{headers:{Authorization:'Bearer '+gdriveAccessToken}});
+    if(!res.ok) return;
+    const meta2=await res.json();
+    const cloudTime=new Date(meta2.modifiedTime).getTime();
+    const localMeta=gdriveLoadMeta();
+    const localTime=localMeta.updatedAt?new Date(localMeta.updatedAt).getTime():0;
+    if(cloudTime>localTime+2000){
+      const cloudData=await gdriveDownload(gdriveFileId);
+      Object.assign(S, cloudData);
+      localStorage.setItem('p3d_v2', JSON.stringify(S));
+      gdriveSaveMeta({updatedAt:meta2.modifiedTime});
+      render();
+      toast('Dados atualizados de outro dispositivo ☁️');
+    }
+  }catch(e){ /* silencioso — não interrompe o uso normal */ }
+}
+
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') gdriveCheckRemote(); });
+setInterval(gdriveCheckRemote, 90000);
 
 // ── UTILS ──
 function fmt(n){return 'R$ '+Number(n).toFixed(2).replace('.',',');}
@@ -3019,5 +3234,6 @@ if('serviceWorker' in navigator){
 document.getElementById('mob-date').textContent=todayLong();
 render();
 </script>
+<script src="https://accounts.google.com/gsi/client" async defer onload="gdriveInit()"></script>
 </body>
 </html>
