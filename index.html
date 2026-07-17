@@ -667,11 +667,36 @@ async function gdriveSyncOnConnect(){
       const localTime=meta.updatedAt?new Date(meta.updatedAt).getTime():0;
       if(cloudTime>localTime){
         const cloudData=await gdriveDownload(file.id);
-        Object.assign(S, cloudData);
-        localStorage.setItem('p3d_v2', JSON.stringify(S));
-        gdriveSaveMeta({updatedAt:file.modifiedTime});
-        render();
-        toast('Dados sincronizados da nuvem ☁️');
+        const contar=(o)=>(o?.producao?.length||0)+(o?.vendas?.length||0)+(o?.estoque?.length||0);
+        const localCount=contar(S), cloudCount=contar(cloudData);
+        if(cloudCount + 3 < localCount){
+          // A nuvem parece ter bem menos registros que o dispositivo local —
+          // pode ser uma versão antiga/errada. Não sobrescreve sem confirmar.
+          const manterLocal=confirm(
+            `⚠️ Possível conflito de dados:\n\n`+
+            `Neste dispositivo: ${localCount} registros (produção+vendas+estoque)\n`+
+            `Na nuvem: ${cloudCount} registros\n\n`+
+            `A versão da nuvem parece desatualizada.\n\n`+
+            `Clique OK para MANTER os dados deste dispositivo e corrigir a nuvem.\n`+
+            `Clique Cancelar para usar mesmo assim os dados da nuvem.`
+          );
+          if(manterLocal){
+            await gdrivePush(true);
+            toast('Dados deste dispositivo mantidos e enviados à nuvem.');
+          } else {
+            Object.assign(S, cloudData);
+            localStorage.setItem('p3d_v2', JSON.stringify(S));
+            gdriveSaveMeta({updatedAt:file.modifiedTime});
+            render();
+            toast('Dados da nuvem aplicados.','warn');
+          }
+        } else {
+          Object.assign(S, cloudData);
+          localStorage.setItem('p3d_v2', JSON.stringify(S));
+          gdriveSaveMeta({updatedAt:file.modifiedTime});
+          render();
+          toast('Dados sincronizados da nuvem ☁️');
+        }
       } else if(localTime>cloudTime){
         await gdrivePush(true);
       }
@@ -748,6 +773,14 @@ async function gdriveCheckRemote(){
     const localTime=localMeta.updatedAt?new Date(localMeta.updatedAt).getTime():0;
     if(cloudTime>localTime+2000){
       const cloudData=await gdriveDownload(gdriveFileId);
+      const contar=(o)=>(o?.producao?.length||0)+(o?.vendas?.length||0)+(o?.estoque?.length||0);
+      const localCount=contar(S), cloudCount=contar(cloudData);
+      if(cloudCount + 3 < localCount){
+        // Nuvem com bem menos dados que o local — não sobrescreve em segundo plano.
+        // Marca erro discreto; a checagem completa (com confirmação) roda na próxima conexão manual.
+        console.warn('gdriveCheckRemote: nuvem com menos registros que local, ignorando pull automático.');
+        return;
+      }
       Object.assign(S, cloudData);
       localStorage.setItem('p3d_v2', JSON.stringify(S));
       gdriveSaveMeta({updatedAt:meta2.modifiedTime});
@@ -3395,11 +3428,13 @@ function installApp(){
   if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;const w=document.getElementById('install-banner-wrap');if(w)w.innerHTML='';toast('App instalado!');});}
 }
 
-// PWA SW
+// Remove qualquer Service Worker/cache de versões anteriores que possam
+// estar servindo uma cópia desatualizada da página (causa de "versão presa").
 if('serviceWorker' in navigator){
-  const sw=`const C='p3dv2';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['/']))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
-  const blob=new Blob([sw],{type:'application/javascript'});
-  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
+  navigator.serviceWorker.getRegistrations().then(regs=>regs.forEach(r=>r.unregister())).catch(()=>{});
+}
+if(window.caches && caches.keys){
+  caches.keys().then(keys=>keys.forEach(k=>caches.delete(k))).catch(()=>{});
 }
 
 // ── SANITIZA todos os registros salvos ao iniciar ──
