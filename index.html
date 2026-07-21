@@ -209,7 +209,7 @@ tr:hover td{background:var(--bg)}
     <div class="sidebar-brand">
       <div class="brand-logo">
         <div class="brand-icon"><i class="ti ti-printer" aria-hidden="true"></i></div>
-        <div><div class="brand-name">Print3D CRM</div><div class="brand-tagline">Restaurado 17/07/26 · v3</div></div>
+        <div><div class="brand-name">Print3D CRM</div><div class="brand-tagline">Restaurado 21/07/26 · v4</div></div>
       </div>
     </div>
     <nav class="sidebar-nav" aria-label="Menu principal">
@@ -239,6 +239,7 @@ tr:hover td{background:var(--bg)}
       <div><div class="page-title" id="page-title">Painel geral</div><div class="page-sub" id="page-sub">Visão consolidada do negócio</div></div>
       <div class="topbar-actions">
         <button class="btn gdrive-btn gdrive-off" id="gdrive-status" onclick="gdriveButtonClick()" title="Sincronização com Google Drive"><i class="ti ti-cloud-off" style="font-size:14px" aria-hidden="true"></i><span class="gdrive-label">Conectar Google Drive</span></button>
+        <button class="btn" onclick="abrirHistoricoDrive()" title="Ver/restaurar versões anteriores salvas na nuvem"><i class="ti ti-history" style="font-size:14px" aria-hidden="true"></i><span class="gdrive-label">Histórico</span></button>
         <button class="btn" onclick="importDataClick()" title="Importar backup .json"><i class="ti ti-upload" style="font-size:14px" aria-hidden="true"></i>Importar</button>
         <input type="file" id="import-file-input" accept="application/json" style="display:none" onchange="importDataFile(event)">
         <button class="btn" onclick="exportData()"><i class="ti ti-download" style="font-size:14px" aria-hidden="true"></i>Exportar</button>
@@ -249,6 +250,7 @@ tr:hover td{background:var(--bg)}
       <div><div style="font-size:15px;font-weight:600" id="mob-title">Painel</div><div style="font-size:11px;color:var(--text3)" id="mob-date"></div></div>
       <div style="display:flex;align-items:center;gap:14px">
         <i class="ti ti-cloud-off gdrive-mob gdrive-off" id="gdrive-status-mobile" onclick="gdriveButtonClick()" title="Sincronização com Google Drive" aria-hidden="true"></i>
+        <button class="btn" style="padding:6px 10px" onclick="abrirHistoricoDrive()" title="Histórico de versões"><i class="ti ti-history" style="font-size:13px" aria-hidden="true"></i></button>
         <button class="btn" style="padding:6px 10px" onclick="importDataClick()" title="Importar backup"><i class="ti ti-upload" style="font-size:13px" aria-hidden="true"></i></button>
         <button class="btn" style="padding:6px 10px" onclick="exportData()"><i class="ti ti-download" style="font-size:13px" aria-hidden="true"></i></button>
         <div class="avatar">ED</div>
@@ -288,8 +290,8 @@ const S = {
     {"id":271,"produto":"CRUZ DE JESUS COROA DE ESPINHO 26CM OAK CARVALHO","qtd":1,"material":"PLA","cor":"OAK CARVALHO MARROM CLARO","tempo":3.39,"gramas":46.36,"gramasTotal":46.36,"filamentos":[{"filamento_id":202,"gramas":46.36}],"filamento_id":202,"preco_venda":28,"data":"2026-06-01"},
     {"id":273,"produto":"TIARA BRASIL AZUL","qtd":10,"material":"PETG","cor":"AZUL","tempo":6.4,"gramas":12.7,"gramasTotal":127,"filamentos":[{"filamento_id":218,"gramas":12.7}],"filamento_id":218,"preco_venda":10,"data":"2026-05-01"},
     {"id":275,"produto":"TIARA BRASIL AMARELO","qtd":16,"material":"PETG","cor":"AMARELO","tempo":10.4,"gramas":12.7,"gramasTotal":203.2,"filamentos":[{"filamento_id":209,"gramas":12.7}],"filamento_id":209,"preco_venda":10,"data":"2026-05-01"},
-    {"id":277,"produto":"ÓCULOS BRASIL AZUL","qtd":12,"material":"PETG","cor":"AZUL","tempo":10.2,"gramas":17.23,"gramasTotal":206.76,"filamentos":[{"filamento_id":218,"gramas":17.23}],"filamento_id":218,"preco_venda":10,"data":"2026-05-01"},
-    {"id":279,"produto":"ÓCULOS BRASIL AMARELO","qtd":16,"material":"PETG","cor":"AMARELO","tempo":13.6,"gramas":17.23,"gramasTotal":275.68,"filamentos":[{"filamento_id":210,"gramas":17.23}],"filamento_id":210,"preco_venda":10,"data":"2026-05-01"},
+    {"id":277,"produto":"OCULOS BRASIL AZUL","qtd":12,"material":"PETG","cor":"AZUL","tempo":10.2,"gramas":17.23,"gramasTotal":206.76,"filamentos":[{"filamento_id":218,"gramas":17.23}],"filamento_id":218,"preco_venda":10,"data":"2026-05-01"},
+    {"id":279,"produto":"OCULOS BRASIL AMARELO","qtd":16,"material":"PETG","cor":"AMARELO","tempo":13.6,"gramas":17.23,"gramasTotal":275.68,"filamentos":[{"filamento_id":210,"gramas":17.23}],"filamento_id":210,"preco_venda":10,"data":"2026-05-01"},
     {"id":281,"produto":"SUPORTE CELULAR SIMPLES ROSA","qtd":2,"material":"PETG","cor":"ROSA","tempo":5.22,"gramas":49.69,"gramasTotal":99.38,"filamentos":[{"filamento_id":200,"gramas":49.69}],"filamento_id":200,"preco_venda":26,"data":"2026-05-01"},
     {"id":283,"produto":"PORTA REMÉDIO 7 DIAS DIA/NOITE BR/AM/AZ","qtd":1,"material":"MULTI","cor":"BRANCO/AMARELO/AZUL","tempo":3.56,"gramas":89.18,"gramasTotal":89.18,"filamentos":[{"filamento_id":205,"gramas":68.07},{"filamento_id":209,"gramas":10.31},{"filamento_id":218,"gramas":10.8}],"filamento_id":205,"preco_venda":34,"data":"2026-05-01"},
     {"id":285,"produto":"SUPORTE PAPEL HIG. C/ LEN. UMED. LISO PRETO","qtd":1,"material":"PETG","cor":"PRETO","tempo":13.03,"gramas":335.06,"gramasTotal":335.06,"filamentos":[{"filamento_id":222,"gramas":335.06}],"filamento_id":222,"preco_venda":89,"data":"2026-05-01"},
@@ -301,6 +303,19 @@ const S = {
     {"id":388,"produto":"SUPORTE P/ MEDALHA C/ NADADOR ÁGATHA NAHYARA PR/BR","qtd":1,"material":"MULTI","cor":"PRETO C/ BRANCO","tempo":3.55,"gramas":82.5,"gramasTotal":82.5,"filamentos":[{"filamento_id":222,"gramas":80.72},{"filamento_id":205,"gramas":1.78}],"filamento_id":222,"preco_venda":26,"data":"2026-05-01"},
     {"id":390,"produto":"SUPORTE P/ MEDALHA SIMPES 2 PTS 40CM PRATA","qtd":1,"material":"PETG","cor":"PRATA","tempo":7.04,"gramas":106.05,"gramasTotal":106.05,"filamentos":[{"filamento_id":207,"gramas":106.05}],"filamento_id":207,"preco_venda":47,"data":"2026-05-01"},
     {"id":394,"produto":"PORTA ESCOVA DE DENTE 2 COPOS PRETO FOSCO","qtd":1,"material":"PLA","cor":"PRETO FOSCO","tempo":4.35,"gramas":209.85,"gramasTotal":209.85,"filamentos":[{"filamento_id":201,"gramas":209.85}],"filamento_id":201,"preco_venda":55,"data":"2026-06-30"},
+    {"id":403,"produto":"SUPORTE P/ MEDALHA C/ NADADOR HELOÍSA URBANO PRETO/AZUL","qtd":1,"material":"MULTI","cor":"PRETO/AZUL","tempo":3.53,"gramas":82.25,"gramasTotal":82.25,"filamentos":[{"filamento_id":219,"gramas":80.71},{"filamento_id":212,"gramas":1.54}],"filamento_id":219,"preco_venda":26,"data":"2026-06-01"},
+    {"id":405,"produto":"QR CODE C/ BASE REDFOX STORE ROSA/BRANCO","qtd":2,"material":"PETG","cor":"ROSA/BRANCO","tempo":7.56,"gramas":77.12,"gramasTotal":154.24,"filamentos":[{"filamento_id":200,"gramas":73.24},{"filamento_id":205,"gramas":3.88}],"filamento_id":200,"preco_venda":35,"data":"2026-06-01"},
+    {"id":407,"produto":"CAIXA PORTA MUNIÇÃO 38SPL P/ 50 PROJ. MAURICIO R. VERDE M./DOUR.","qtd":2,"material":"MULTI","cor":"VERDE MILITAR/DOURADO","tempo":9.59,"gramas":141.25,"gramasTotal":282.5,"filamentos":[{"filamento_id":203,"gramas":138.96},{"filamento_id":216,"gramas":2.29}],"filamento_id":203,"preco_venda":60,"data":"2026-07-01"},
+    {"id":417,"produto":"ESTRELA SENSORIAL GIRATÓRIA 12CM RAINBOW CANDY COLOR 12X12X12","qtd":1,"material":"PLA","cor":"RAINBOW CANDY COLOR","tempo":4.4,"gramas":48.32,"gramasTotal":48.32,"filamentos":[{"filamento_id":414,"gramas":48.32}],"filamento_id":414,"preco_venda":35,"data":"2026-07-16"},
+    {"id":419,"produto":"ESTRELA SENSORIAL GIRATÓRIA 11CM RAINBOW CANDY COLOR 9,5X9,5X11","qtd":1,"material":"PLA","cor":"RAINBOW CANDY COLORS","tempo":3.27,"gramas":28.48,"gramasTotal":28.48,"filamentos":[{"filamento_id":414,"gramas":28.48}],"filamento_id":414,"preco_venda":25,"data":"2026-07-16"},
+    {"id":421,"produto":"ESTRELA SENSORIAL GIRATÓRIA 12CM DUO COLOR AZUL/ROXO 12X12X12","qtd":1,"material":"PLA","cor":"DUO COLOR AZUL/ROXO","tempo":4.4,"gramas":48.32,"gramasTotal":48.32,"filamentos":[{"filamento_id":214,"gramas":48.32}],"filamento_id":214,"preco_venda":35,"data":"2026-07-16"},
+    {"id":424,"produto":"SIMBOLO % 50CM BRANCO DENTAL","qtd":1,"material":"PETG","cor":"BRANCO DENTAL","tempo":30,"gramas":897.14,"gramasTotal":897.14,"filamentos":[{"filamento_id":246,"gramas":897.14}],"filamento_id":246,"preco_venda":280,"data":"2026-07-13"},
+    {"id":426,"produto":"BOLA INFINITA SENSORIAL 6,5CM DOURADO","qtd":1,"material":"PLA","cor":"DOURADO","tempo":4.58,"gramas":89.66,"gramasTotal":89.66,"filamentos":[{"filamento_id":216,"gramas":89.66}],"filamento_id":216,"preco_venda":50,"data":"2026-07-16"},
+    {"id":428,"produto":"QR CODE C/ BASE REDFOX CROSS BRANCO/ROSA","qtd":1,"material":"MULTI","cor":"BRANCO/ROSA","tempo":4.17,"gramas":68.1,"gramasTotal":68.1,"filamentos":[{"filamento_id":205,"gramas":62.63},{"filamento_id":200,"gramas":5.47}],"filamento_id":205,"preco_venda":35,"data":"2026-07-01"},
+    {"id":430,"produto":"QR CODE C/ BASE JOKA SUSHI BAR PRETO/BRANCO","qtd":1,"material":"MULTI","cor":"PRETO/BRANCO","tempo":4.2,"gramas":78.08,"gramasTotal":78.08,"filamentos":[{"filamento_id":219,"gramas":71.45},{"filamento_id":205,"gramas":6.63}],"filamento_id":219,"preco_venda":35,"data":"2026-07-12"},
+    {"id":432,"produto":"SUPORTE P/ ALEXA ECHO DOT. 3 AMAZON P/ TOMADA PRETO FOSCO","qtd":1,"material":"PLA","cor":"PRETO FOSCO","tempo":5.15,"gramas":87.61,"gramasTotal":87.61,"filamentos":[{"filamento_id":201,"gramas":87.61}],"filamento_id":201,"preco_venda":36,"data":"2026-07-05"},
+    {"id":434,"produto":"ORGANIZADOR P/ 3 MARC/1 APAG/ 1 SOLUC. LARANJA","qtd":1,"material":"PETG","cor":"LARANJA","tempo":3.21,"gramas":73.89,"gramasTotal":73.89,"filamentos":[{"filamento_id":213,"gramas":73.89}],"filamento_id":213,"preco_venda":30,"data":"2026-07-01"},
+    {"id":439,"produto":"ESTRELA SENSORIAL GIRATÓRIA 18CM DUO COLOR AZ/RX/DOUR","qtd":1,"material":"MULTI","cor":"AZ/RX/DOUR","tempo":6.14,"gramas":77.49,"gramasTotal":77.49,"filamentos":[{"filamento_id":214,"gramas":72},{"filamento_id":216,"gramas":5.49}],"filamento_id":214,"preco_venda":59,"data":"2026-05-01"},
   ],
   vendas:[
     {"id":297,"produto":"CAIXINHA DE FIGURINHA COPA AZ/AM","qtd":1,"canal":"Venda Direta","tipo":"Atacado","valor":20,"cliente":"RHAYANNI","data":"2026-05-23","pgto":"PIX"},
@@ -392,6 +407,20 @@ const S = {
     {"id":393,"produto":"SUPORTE P/ MEDALHA SIMPES 2 PTS 40CM PRATA","qtd":1,"canal":"Venda Direta","tipo":"Atacado","valor":47,"cliente":"LARI CROSS","pgto":"PIX","data":"2026-06-24"},
     {"id":396,"produto":"PORTA ESCOVA DE DENTE 2 COPOS PRETO FOSCO","qtd":1,"canal":"Venda Direta","tipo":"Atacado","valor":55,"cliente":"THAYNARA CROSS","pgto":"PIX","data":"2026-07-01"},
     {"id":397,"produto":"CAIXINHA DE FIGURINHA COPA BR/AZ","qtd":2,"canal":"Venda Direta","tipo":"Atacado","valor":40,"cliente":"ALINE (ISAIAS)","pgto":"PIX","data":"2026-06-19"},
+    {"id":436,"produto":"SUPORTE P/ MEDALHA C/ NADADOR HELOÍSA URBANO PRETO/AZUL","qtd":1,"canal":"Venda Direta","tipo":"Atacado","valor":26,"cliente":"MORIAN NATAÇÃO","pgto":"Dinheiro","data":"2026-07-08"},
+    {"id":437,"produto":"ESTRELA SENSORIAL GIRATÓRIA 18CM AZ/BR 4 PAUSAS","qtd":1,"canal":"Venda Direta","tipo":"Atacado","valor":59,"cliente":"RAHYANNI","pgto":"PIX","data":"2026-07-14"},
+    {"id":438,"produto":"ESTRELA SENSORIAL GIRATÓRIA 18CM DUO COLOR AZ/RX","qtd":1,"canal":"Venda Direta","tipo":"Atacado","valor":59,"cliente":"RAHYANNI","pgto":"PIX","data":"2026-07-14"},
+    {"id":441,"produto":"ESTRELA SENSORIAL GIRATÓRIA 18CM DUO COLOR AZ/RX/DOUR","qtd":1,"canal":"Venda Direta","tipo":"Atacado","valor":59,"cliente":"RAHYANNI","pgto":"PIX","data":"2026-07-14"},
+    {"id":442,"produto":"QR CODE C/ BASE REDFOX STORE ROSA/BRANCO","qtd":2,"canal":"Venda Direta","tipo":"Atacado","valor":70,"cliente":"THAIS CROSS","pgto":"PIX","data":"2026-07-09"},
+    {"id":443,"produto":"QR CODE C/ BASE REDFOX CROSS BRANCO/ROSA","qtd":1,"canal":"Venda Direta","tipo":"Atacado","valor":35,"cliente":"THAIS CROSS","pgto":"PIX","data":"2026-07-09"},
+    {"id":444,"produto":"ORGANIZADOR P/ 3 MARC/1 APAG/ 1 SOLUC. LARANJA","qtd":1,"canal":"Venda Direta","tipo":"Atacado","valor":30,"cliente":"THAIS CROSS","pgto":"PIX","data":"2026-07-09"},
+    {"id":445,"produto":"CAIXA PORTA MUNIÇÃO 38SPL P/ 50 PROJ. MAURICIO R. VERDE M./DOUR.","qtd":2,"canal":"Venda Direta","tipo":"Atacado","valor":120,"cliente":"RAFAEL","pgto":"PIX","data":"2026-07-08"},
+    {"id":446,"produto":"SUPORTE P/ ALEXA ECHO DOT. 3 AMAZON P/ TOMADA PRETO FOSCO","qtd":1,"canal":"Venda Direta","tipo":"Atacado","valor":36,"cliente":"RAFAEL","pgto":"PIX","data":"2026-07-08"},
+    {"id":447,"produto":"SIMBOLO % 50CM BRANCO DENTAL","qtd":1,"canal":"Venda Direta","tipo":"Atacado","valor":280,"cliente":"MARIA FERNANDA","pgto":"PIX","data":"2026-07-10"},
+    {"id":448,"produto":"QR CODE C/ BASE JOKA SUSHI BAR PRETO/BRANCO","qtd":1,"canal":"Venda Direta","tipo":"Atacado","valor":35,"cliente":"KATIUSCIA JOKA SUSHI","pgto":"PIX","data":"2026-07-13"},
+    {"id":449,"produto":"BOLA INFINITA SENSORIAL 6,5CM DOURADO","qtd":1,"canal":"Venda Direta","tipo":"Atacado","valor":50,"cliente":"CAROL","pgto":"PIX","data":"2026-07-17"},
+    {"id":450,"produto":"ESTRELA SENSORIAL GIRATÓRIA 11CM RAINBOW CANDY COLOR 9,5X9,5X11","qtd":1,"canal":"Venda Direta","tipo":"Atacado","valor":25,"cliente":"CAROL","pgto":"PIX","data":"2026-07-17"},
+    {"id":451,"produto":"ESTRELA SENSORIAL GIRATÓRIA 12CM DUO COLOR AZUL/ROXO12X12X12","qtd":1,"canal":"Venda Direta","tipo":"Atacado","valor":35,"cliente":"CAROL","pgto":"PIX","data":"2026-07-17"},
   ],
   estoque:[
     {"id":248,"produto":"CAIXINHA DE FIGURINHA COPA AZ/BR","qtd":0,"material":"MULTI","preco":20},
@@ -412,42 +441,67 @@ const S = {
     {"id":282,"produto":"SUPORTE CELULAR SIMPLES ROSA","qtd":0,"material":"PETG","preco":26},
     {"id":284,"produto":"PORTA REMÉDIO 7 DIAS DIA/NOITE BR/AM/AZ","qtd":0,"material":"MULTI","preco":34},
     {"id":286,"produto":"SUPORTE PAPEL HIG. C/ LEN. UMED. LISO PRETO","qtd":0,"material":"PETG","preco":89},
-    {"id":290,"produto":"ESTRELA SENSORIAL GIRATÓRIA 18CM DUO COLOR AZ/RX","qtd":1,"material":"PLA","preco":59},
+    {"id":290,"produto":"ESTRELA SENSORIAL GIRATÓRIA 18CM DUO COLOR AZ/RX","qtd":0,"material":"PLA","preco":59},
     {"id":291,"produto":"ESTRELA SENSORIAL 15CM DUO COLOR AZ/RX","qtd":1,"material":"PLA","preco":28},
-    {"id":293,"produto":"ESTRELA SENSORIAL GIRATÓRIA 18CM AZ/BR 4 PAUSAS","qtd":1,"material":"MULTI","preco":59},
+    {"id":293,"produto":"ESTRELA SENSORIAL GIRATÓRIA 18CM AZ/BR 4 PAUSAS","qtd":0,"material":"MULTI","preco":59},
     {"id":314,"produto":"CHAVEIRO POLVO P 4CM AZUL","qtd":0,"material":"PETG","preco":10},
     {"id":319,"produto":"CHAVEIRO POLVO G 8CM PRETO","qtd":0,"material":"PETG","preco":18},
     {"id":389,"produto":"SUPORTE P/ MEDALHA C/ NADADOR ÁGATHA NAHYARA PR/BR","qtd":0,"material":"MULTI","preco":26},
     {"id":391,"produto":"SUPORTE P/ MEDALHA SIMPES 2 PTS 40CM PRATA","qtd":0,"material":"PETG","preco":47},
     {"id":395,"produto":"PORTA ESCOVA DE DENTE 2 COPOS PRETO FOSCO","qtd":0,"material":"PLA","preco":55},
+    {"id":404,"produto":"SUPORTE P/ MEDALHA C/ NADADOR HELOÍSA URBANO PRETO/AZUL","qtd":0,"material":"MULTI","preco":26},
+    {"id":406,"produto":"QR CODE C/ BASE REDFOX STORE ROSA/BRANCO","qtd":0,"material":"MULTI","preco":35},
+    {"id":408,"produto":"CAIXA PORTA MUNIÇÃO 38SPL P/ 50 PROJ. MAURICIO R. VERDE M./DOUR.","qtd":0,"material":"MULTI","preco":60},
+    {"id":410,"produto":"ALEATORIO","qtd":0,"material":"ABS","preco":38},
+    {"id":412,"produto":"ALEATORIO 2","qtd":0,"material":"PETG","preco":0.42},
+    {"id":415,"produto":"OCULOS BRASIL AZUL","qtd":12,"material":"PETG","preco":10},
+    {"id":416,"produto":"OCULOS BRASIL AMARELO","qtd":16,"material":"PETG","preco":10},
+    {"id":418,"produto":"ESTRELA SENSORIAL GIRATÓRIA 12CM RAINBOW CANDY COLOR 12X12X12","qtd":1,"material":"PLA","preco":35},
+    {"id":420,"produto":"ESTRELA SENSORIAL GIRATÓRIA 11CM RAINBOW CANDY COLOR 9,5X9,5X11","qtd":0,"material":"PLA","preco":25},
+    {"id":422,"produto":"ESTRELA SENSORIAL GIRATÓRIA 12CM DUO COLOR AZUL/ROXO12X12X12","qtd":0,"material":"PLA","preco":35},
+    {"id":423,"produto":"ESTRELA SENSORIAL GIRATÓRIA 12CM DUO COLOR AZUL/ROXO 12X12X12","qtd":1,"material":"PLA","preco":35},
+    {"id":425,"produto":"SIMBOLO % 50CM BRANCO DENTAL","qtd":0,"material":"PETG","preco":280},
+    {"id":427,"produto":"BOLA INFINITA SENSORIAL 6,5CM DOURADO","qtd":0,"material":"PLA","preco":50},
+    {"id":429,"produto":"QR CODE C/ BASE REDFOX CROSS BRANCO/ROSA","qtd":0,"material":"MULTI","preco":35},
+    {"id":431,"produto":"QR CODE C/ BASE JOKA SUSHI BAR PRETO/BRANCO","qtd":0,"material":"MULTI","preco":35},
+    {"id":433,"produto":"SUPORTE P/ ALEXA ECHO DOT. 3 AMAZON P/ TOMADA PRETO FOSCO","qtd":0,"material":"PLA","preco":36},
+    {"id":435,"produto":"ORGANIZADOR P/ 3 MARC/1 APAG/ 1 SOLUC. LARANJA","qtd":0,"material":"PETG","preco":30},
+    {"id":440,"produto":"ESTRELA SENSORIAL GIRATÓRIA 18CM DUO COLOR AZ/RX/DOUR","qtd":0,"material":"MULTI","preco":59},
   ],
   filamentos:[
-    {"id":200,"tipo":"PETG","cor":"ROSA","marca":"CREALITY","peso_total":1000,"peso_restante":876.9,"preco":149},
-    {"id":201,"tipo":"PLA","cor":"PRETO FOSCO","marca":"MULTIFILA","peso_total":1000,"peso_restante":790.15,"preco":109.9},
+    {"id":200,"tipo":"PETG","cor":"ROSA","marca":"CREALITY","peso_total":1000,"peso_restante":724.95,"preco":149},
+    {"id":201,"tipo":"PLA","cor":"PRETO FOSCO","marca":"MULTIFILA","peso_total":1000,"peso_restante":702.54,"preco":109.9},
     {"id":202,"tipo":"PLA","cor":"OAK CARVALHO MARROM CLARO","marca":"SUNLU","peso_total":1000,"peso_restante":953.64,"preco":148.9},
-    {"id":203,"tipo":"PLA","cor":"VERDE MILITAR","marca":"MULTIFILA MATTE","peso_total":1000,"peso_restante":1000,"preco":119.9},
+    {"id":203,"tipo":"PLA","cor":"VERDE MILITAR","marca":"MULTIFILA MATTE","peso_total":1000,"peso_restante":722.08,"preco":119.9},
     {"id":204,"tipo":"ABS","cor":"VERDE BANDEIRA","marca":"VOOLT3D","peso_total":1000,"peso_restante":1000,"preco":114.9},
-    {"id":205,"tipo":"PETG","cor":"BRANCO","marca":"3D PRINTER FILAMENT","peso_total":2000,"peso_restante":1002.86,"preco":84.9},
+    {"id":205,"tipo":"PETG","cor":"BRANCO","marca":"3D PRINTER FILAMENT","peso_total":2000,"peso_restante":925.84,"preco":84.9},
     {"id":206,"tipo":"PETG","cor":"VERMELHO","marca":"3D PRINTER FILAMENT","peso_total":1000,"peso_restante":1000,"preco":92},
     {"id":207,"tipo":"PETG","cor":"PRATA","marca":"3D PRINTER FILAMENT","peso_total":1000,"peso_restante":893.95,"preco":79},
     {"id":208,"tipo":"PETG","cor":"PRATA","marca":"GENER TECH","peso_total":1000,"peso_restante":1000,"preco":79},
     {"id":209,"tipo":"PETG","cor":"AMARELO","marca":"VOOLT3D","peso_total":1000,"peso_restante":205.39,"preco":114.9},
     {"id":210,"tipo":"PETG","cor":"AMARELO","marca":"FUSIONX FILAMENTOS 3D HIGH SPEED","peso_total":1000,"peso_restante":724.32,"preco":78.9},
     {"id":211,"tipo":"PETG","cor":"PRETO","marca":"MASTERPRINT","peso_total":1000,"peso_restante":1000,"preco":101.89},
-    {"id":212,"tipo":"PETG","cor":"AZUL","marca":"MASTERPRINT","peso_total":1000,"peso_restante":275.2,"preco":94.9},
-    {"id":213,"tipo":"PETG","cor":"LARANJA","marca":"3D PRINTING FILAMENT","peso_total":1000,"peso_restante":1000,"preco":99},
-    {"id":214,"tipo":"PLA","cor":"DUO COLOR SHADOW AMETISTA E AZUL SAFIRA","marca":"VOOLT3D PLA V-SILK PREMIUM","peso_total":1000,"peso_restante":864.2,"preco":144.9},
-    {"id":216,"tipo":"PLA","cor":"DOURADO","marca":"VOOLT3D PLA V-SILK PREMIUM","peso_total":1000,"peso_restante":1000,"preco":139.9},
+    {"id":212,"tipo":"PETG","cor":"AZUL","marca":"MASTERPRINT","peso_total":1000,"peso_restante":273.66,"preco":94.9},
+    {"id":213,"tipo":"PETG","cor":"LARANJA","marca":"3D PRINTING FILAMENT","peso_total":1000,"peso_restante":926.11,"preco":99},
+    {"id":214,"tipo":"PLA","cor":"DUO COLOR SHADOW AMETISTA E AZUL SAFIRA","marca":"VOOLT3D PLA V-SILK PREMIUM","peso_total":1000,"peso_restante":743.88,"preco":144.9},
+    {"id":216,"tipo":"PLA","cor":"DOURADO","marca":"VOOLT3D PLA V-SILK PREMIUM","peso_total":1000,"peso_restante":900.27,"preco":139.9},
     {"id":217,"tipo":"ABS","cor":"VERMELHO","marca":"ONYON3D","peso_total":1000,"peso_restante":1000,"preco":90.5},
     {"id":218,"tipo":"PETG","cor":"AZUL","marca":"VOOLT3D PETG HF PREMIUM","peso_total":1000,"peso_restante":582.55,"preco":99.9},
-    {"id":219,"tipo":"PETG","cor":"PRETO","marca":"VOOLT3D PETG HF PREMIUM","peso_total":1000,"peso_restante":886.91,"preco":99.9},
+    {"id":219,"tipo":"PETG","cor":"PRETO","marca":"VOOLT3D PETG HF PREMIUM","peso_total":1000,"peso_restante":734.75,"preco":99.9},
     {"id":220,"tipo":"PETG","cor":"LARANJA TRANSLÚCIDO","marca":"VOOLT3D PETG HF PREMIUM","peso_total":1000,"peso_restante":1000,"preco":114.9},
     {"id":221,"tipo":"PETG","cor":"VERMELHO TRANSLÚCIDO","marca":"VOOLT3D PETG HF PREMIUM","peso_total":1000,"peso_restante":1000,"preco":140},
     {"id":222,"tipo":"PETG","cor":"PRETO","marca":"3D PRINTER FILAMENT","peso_total":1000,"peso_restante":486.92,"preco":84.9},
-    {"id":246,"tipo":"PETG","cor":"BRANCO DENTAL","marca":"VOOLT3D","peso_total":1000,"peso_restante":1000,"preco":125.89},
+    {"id":246,"tipo":"PETG","cor":"BRANCO DENTAL","marca":"VOOLT3D","peso_total":2000,"peso_restante":1102.86,"preco":125.89},
+    {"id":414,"tipo":"PLA","cor":"RAINBOW CANDY COLORS","marca":"MULTFILA","peso_total":1000,"peso_restante":923.2,"preco":184},
   ],
   saidas:[],
-  patrimonio:[],
+  patrimonio:[
+    {"id":398,"item":"Impressora Bambu Lab A1","qtd":1,"valor_unit":4093.44,"valor_total":4093.44,"forma_pgto":"PIX","parcelas":1,"data":"2026-05-17","carencia":10,"obs":""},
+    {"id":399,"item":"Impressora Etiquetadora","qtd":1,"valor_unit":307.47,"valor_total":307.47,"forma_pgto":"PIX","parcelas":1,"data":"2026-06-09","carencia":10,"obs":""},
+    {"id":400,"item":"Notebook ASUS TUF Gaming A15","qtd":1,"valor_unit":5383.51,"valor_total":5383.51,"forma_pgto":"PIX","parcelas":1,"data":"2026-06-16","carencia":0,"obs":""},
+    {"id":401,"item":"Cadeira Gamer","qtd":1,"valor_unit":495,"valor_total":495,"forma_pgto":"PIX","parcelas":1,"data":"2026-06-22","carencia":0,"obs":""},
+    {"id":402,"item":"Mesa escritório","qtd":1,"valor_unit":403.3,"valor_total":403.3,"forma_pgto":"Cartão Crédito","parcelas":5,"data":"2026-07-17","carencia":10,"obs":""},
+  ],
   db_precificacao:[
     {"produto":"CHAVEIRO RAPOSA 3CM 50UN  C/ LOGO REDFOX","impressora":"Bambu Lab A1","filamento":"PETG LARANJA (3D PRINTING FILAMENT)","gramas_gastas":221.17,"tempo_hrs":22.34,"peso_gr":221.17,"custo_material":21.9,"custo_energia":10.61,"custo_manutencao":6.14,"custo_roi":24.57,"custo_falhas":1.09,"custo_dep":2.43,"custo_producao":66.75,"custo_hora_op":2,"custo_adicional":125.1,"custo_total":193.85,"sug_atacado":280.77,"sug_varejo":411.79,"fin_atacado":281,"fin_varejo":412,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":87.15,"luc_varejo":218.15,"marg_atacado":31,"marg_varejo":52.9,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":125,"data":"2026-07-02","id":533},
     {"produto":"ARTE DE PAREDE 2D ORAÇÃO DE SANTA MARIA 80CM","impressora":"Bambu Lab A1","filamento":"PETG PRETO (3D PRINTER FILAMENT)","gramas_gastas":287.53,"tempo_hrs":16.12,"peso_gr":287.53,"custo_material":24.41,"custo_energia":7.66,"custo_manutencao":4.43,"custo_roi":17.73,"custo_falhas":1.22,"custo_dep":2.43,"custo_producao":57.88,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":60.48,"sug_atacado":83.83,"sug_varejo":122.95,"fin_atacado":84,"fin_varejo":123,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":23.52,"luc_varejo":62.52,"marg_atacado":28,"marg_varejo":50.8,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-03","id":534},
@@ -474,8 +528,8 @@ const S = {
     {"produto":"CHAVEIRO POLVO G 8CM PRETO","impressora":"Bambu Lab A1","filamento":"PETG PRETO (3D PRINTER FILAMENT)","gramas_gastas":20.19,"tempo_hrs":2.05,"peso_gr":20.19,"custo_material":1.71,"custo_energia":0.97,"custo_manutencao":0.56,"custo_roi":2.25,"custo_falhas":0.09,"custo_dep":2.43,"custo_producao":8.02,"custo_hora_op":0.5,"custo_adicional":2.6,"custo_total":11.12,"sug_atacado":16.82,"sug_varejo":24.67,"fin_atacado":17,"fin_varejo":25,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":5.88,"luc_varejo":13.88,"marg_atacado":34.6,"marg_varejo":55.5,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2.5,"data":"2026-07-04","id":555},
     {"produto":"TIARA BRASIL AZUL","impressora":"Bambu Lab A1","filamento":"PETG AZUL (VOOLT3D PETG HF PREMIUM)","gramas_gastas":12.7,"tempo_hrs":0.4,"peso_gr":12.7,"custo_material":1.27,"custo_energia":0.19,"custo_manutencao":0.11,"custo_roi":0.44,"custo_falhas":0.06,"custo_dep":2.43,"custo_producao":4.5,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":7.1,"sug_atacado":11.62,"sug_varejo":17.04,"fin_atacado":12,"fin_varejo":18,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":4.9,"luc_varejo":10.9,"marg_atacado":40.8,"marg_varejo":60.5,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-04","id":556},
     {"produto":"TIARA BRASIL AMARELO","impressora":"Bambu Lab A1","filamento":"PETG AMARELO (VOOLT3D)","gramas_gastas":12.7,"tempo_hrs":0.4,"peso_gr":12.7,"custo_material":1.46,"custo_energia":0.19,"custo_manutencao":0.11,"custo_roi":0.44,"custo_falhas":0.07,"custo_dep":2.43,"custo_producao":4.7,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":7.3,"sug_atacado":11.92,"sug_varejo":17.48,"fin_atacado":12,"fin_varejo":18,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":4.7,"luc_varejo":10.7,"marg_atacado":39.1,"marg_varejo":59.4,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-04","id":557},
-    {"produto":"ÓCULOS BRASIL AZUL","impressora":"Bambu Lab A1","filamento":"PETG AZUL (VOOLT3D PETG HF PREMIUM)","gramas_gastas":17.23,"tempo_hrs":0.51,"peso_gr":17.23,"custo_material":1.72,"custo_energia":0.24,"custo_manutencao":0.14,"custo_roi":0.56,"custo_falhas":0.09,"custo_dep":2.43,"custo_producao":5.18,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":7.78,"sug_atacado":12.58,"sug_varejo":18.45,"fin_atacado":13,"fin_varejo":19,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":5.22,"luc_varejo":11.22,"marg_atacado":40.2,"marg_varejo":59.1,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-04","id":558},
-    {"produto":"ÓCULOS BRASIL AMARELO","impressora":"Bambu Lab A1","filamento":"PETG AMARELO (VOOLT3D)","gramas_gastas":17.23,"tempo_hrs":0.51,"peso_gr":17.23,"custo_material":1.98,"custo_energia":0.24,"custo_manutencao":0.14,"custo_roi":0.56,"custo_falhas":0.1,"custo_dep":2.43,"custo_producao":5.45,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":8.05,"sug_atacado":12.99,"sug_varejo":19.05,"fin_atacado":13,"fin_varejo":20,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":4.95,"luc_varejo":11.95,"marg_atacado":38.1,"marg_varejo":59.7,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-04","id":559},
+    {"produto":"OCULOS BRASIL AZUL","impressora":"Bambu Lab A1","filamento":"PETG AZUL (VOOLT3D PETG HF PREMIUM)","gramas_gastas":17.23,"tempo_hrs":0.51,"peso_gr":17.23,"custo_material":2.57,"custo_energia":0.24,"custo_manutencao":0.14,"custo_roi":0.56,"custo_falhas":0.13,"custo_dep":2.43,"custo_producao":6.07,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":8.67,"sug_atacado":13,"sug_varejo":19.07,"fin_atacado":13,"fin_varejo":19,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":4.33,"luc_varejo":10.33,"marg_atacado":33.3,"marg_varejo":54.4,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-04","id":558},
+    {"produto":"OCULOS BRASIL AMARELO","impressora":"Bambu Lab A1","filamento":"PETG AMARELO (VOOLT3D)","gramas_gastas":17.23,"tempo_hrs":0.51,"peso_gr":17.23,"custo_material":2.57,"custo_energia":0.24,"custo_manutencao":0.14,"custo_roi":0.56,"custo_falhas":0.13,"custo_dep":2.43,"custo_producao":6.07,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":8.67,"sug_atacado":13,"sug_varejo":19.07,"fin_atacado":13,"fin_varejo":20,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":4.33,"luc_varejo":11.33,"marg_atacado":33.3,"marg_varejo":56.6,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-04","id":559},
     {"produto":"SUPORTE PARA CELULAR SIMPES ROSA","impressora":"Bambu Lab A1","filamento":"PETG ROSA (CREALITY)","gramas_gastas":49.69,"tempo_hrs":2.41,"peso_gr":49.69,"custo_material":7.4,"custo_energia":1.14,"custo_manutencao":0.66,"custo_roi":2.65,"custo_falhas":0.37,"custo_dep":2.43,"custo_producao":14.66,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":17.26,"sug_atacado":25.85,"sug_varejo":37.92,"fin_atacado":26,"fin_varejo":38,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":8.74,"luc_varejo":20.74,"marg_atacado":33.6,"marg_varejo":54.6,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-04","id":560},
     {"produto":"PORTA REMÉDIO 7 DIAS DIA/NOITE BR/AM/AZ","impressora":"Bambu Lab A1","filamento":"PETG AZUL (VOOLT3D PETG HF PREMIUM)","gramas_gastas":89.18,"tempo_hrs":3.56,"peso_gr":89.18,"custo_material":5.15,"custo_energia":1.69,"custo_manutencao":0.98,"custo_roi":3.92,"custo_falhas":0.26,"custo_dep":2.43,"custo_producao":14.42,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":17.02,"sug_atacado":24.92,"sug_varejo":36.56,"fin_atacado":25,"fin_varejo":37,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":7.98,"luc_varejo":19.98,"marg_atacado":31.9,"marg_varejo":54,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-04","id":562},
     {"produto":"SUPORTE DEDOS FOTO MANICURE C/ LOGO ROSA/PRETO","impressora":"Bambu Lab A1","filamento":"PETG PRETO (3D PRINTER FILAMENT)","gramas_gastas":24.13,"tempo_hrs":1.27,"peso_gr":24.13,"custo_material":3.57,"custo_energia":0.6,"custo_manutencao":0.35,"custo_roi":1.4,"custo_falhas":0.18,"custo_dep":2.43,"custo_producao":8.53,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":11.13,"sug_atacado":17.22,"sug_varejo":25.26,"fin_atacado":18,"fin_varejo":26,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":6.87,"luc_varejo":14.87,"marg_atacado":38.2,"marg_varejo":57.2,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-04","id":563},
@@ -486,16 +540,34 @@ const S = {
     {"produto":"SUPORTE P/ MEDALHA C/ NADADOR ÁGATHA NAHYARA PR/BR","impressora":"Bambu Lab A1","filamento":"PETG BRANCO (3D PRINTER FILAMENT)","gramas_gastas":82.5,"tempo_hrs":3.55,"peso_gr":82.5,"custo_material":12.29,"custo_energia":1.69,"custo_manutencao":0.98,"custo_roi":3.91,"custo_falhas":0.61,"custo_dep":2.43,"custo_producao":21.9,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":24.5,"sug_atacado":36.76,"sug_varejo":53.91,"fin_atacado":29,"fin_varejo":42,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":4.5,"luc_varejo":17.5,"marg_atacado":15.5,"marg_varejo":41.7,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-05","id":568},
     {"produto":"SUPORTE P/ MEDALHA SIMPLES 2 PTS 40CM PRATA","impressora":"Bambu Lab A1","filamento":"PETG PRATA (3D PRINTER FILAMENT)","gramas_gastas":106.05,"tempo_hrs":7.04,"peso_gr":106.05,"custo_material":8.38,"custo_energia":3.34,"custo_manutencao":1.94,"custo_roi":7.74,"custo_falhas":0.42,"custo_dep":2.43,"custo_producao":24.25,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":26.85,"sug_atacado":40.27,"sug_varejo":59.07,"fin_atacado":41,"fin_varejo":60,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":14.15,"luc_varejo":33.15,"marg_atacado":34.5,"marg_varejo":55.2,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-05","id":569},
     {"produto":"PORTA ESCOVA DE DENTE 2 COPOS PRETO FOSCO","impressora":"Bambu Lab A1","filamento":"PLA PRETO FOSCO (MULTIFILA)","gramas_gastas":209.85,"tempo_hrs":4.35,"peso_gr":209.85,"custo_material":23.06,"custo_energia":2.07,"custo_manutencao":1.2,"custo_roi":4.79,"custo_falhas":1.15,"custo_dep":2.43,"custo_producao":34.69,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":37.29,"sug_atacado":55.94,"sug_varejo":82.04,"fin_atacado":56,"fin_varejo":83,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":18.71,"luc_varejo":45.71,"marg_atacado":33.4,"marg_varejo":55.1,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-05","id":570},
+    {"produto":"SUPORTE P/ MEDALHA C/ NADADOR HELOÍSA URBANO PRETO/AZ","impressora":"Bambu Lab A1","filamento":"PETG AZUL (MASTERPRINT)","gramas_gastas":82.25,"tempo_hrs":3.53,"peso_gr":82.25,"custo_material":8.37,"custo_energia":1.68,"custo_manutencao":0.97,"custo_roi":3.88,"custo_falhas":0.42,"custo_dep":2.43,"custo_producao":17.75,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":20.35,"sug_atacado":30.52,"sug_varejo":44.77,"fin_atacado":31,"fin_varejo":45,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":10.65,"luc_varejo":24.65,"marg_atacado":34.4,"marg_varejo":54.8,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-17","id":571},
+    {"produto":"CAIXA PORTA MUNIÇÃO 38SPL P/ 50 PROJ. MAURICIO R. VERDE M./DOUR.","impressora":"Bambu Lab A1","filamento":"PLA DOURADO (VOOLT3D PLA V-SILK PREMIUM)","gramas_gastas":141.25,"tempo_hrs":5.41,"peso_gr":141.25,"custo_material":16.98,"custo_energia":2.57,"custo_manutencao":1.49,"custo_roi":5.95,"custo_falhas":0.85,"custo_dep":2.43,"custo_producao":30.27,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":32.87,"sug_atacado":49.3,"sug_varejo":72.31,"fin_atacado":50,"fin_varejo":73,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":17.13,"luc_varejo":40.13,"marg_atacado":34.3,"marg_varejo":55,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-17","id":573},
+    {"produto":"QR CODE C/ BASE REDFOX STORE ROSA/BRANCO","impressora":"Bambu Lab A1","filamento":"PETG BRANCO (3D PRINTER FILAMENT)","gramas_gastas":77.12,"tempo_hrs":4.1,"peso_gr":77.12,"custo_material":11.08,"custo_energia":1.95,"custo_manutencao":1.13,"custo_roi":4.51,"custo_falhas":0.55,"custo_dep":2.43,"custo_producao":21.65,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":24.25,"sug_atacado":36.37,"sug_varejo":53.34,"fin_atacado":37,"fin_varejo":54,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":12.75,"luc_varejo":29.75,"marg_atacado":34.5,"marg_varejo":55.1,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-17","id":574},
+    {"produto":"QR CODE C/ BASE REDFOX CROSS BRANCO/ROSA","impressora":"Bambu Lab A1","filamento":"PETG ROSA (CREALITY)","gramas_gastas":78.71,"tempo_hrs":4.17,"peso_gr":78.71,"custo_material":3.92,"custo_energia":1.98,"custo_manutencao":1.15,"custo_roi":4.59,"custo_falhas":0.2,"custo_dep":2.43,"custo_producao":14.26,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":16.86,"sug_atacado":25.3,"sug_varejo":37.1,"fin_atacado":26,"fin_varejo":38,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":9.14,"luc_varejo":21.14,"marg_atacado":35.2,"marg_varejo":55.6,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-17","id":575},
+    {"produto":"QR CODE C/ BASE JOKA SUSHI BAR PRETO/BRANCO","impressora":"Bambu Lab A1","filamento":"PETG BRANCO (3D PRINTER FILAMENT)","gramas_gastas":78.08,"tempo_hrs":4.2,"peso_gr":78.08,"custo_material":6.35,"custo_energia":1.99,"custo_manutencao":1.16,"custo_roi":4.62,"custo_falhas":0.32,"custo_dep":2.43,"custo_producao":16.87,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":19.47,"sug_atacado":29.2,"sug_varejo":42.82,"fin_atacado":30,"fin_varejo":43,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":10.53,"luc_varejo":23.53,"marg_atacado":35.1,"marg_varejo":54.7,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-17","id":576},
+    {"produto":"QUALQUER COISA","impressora":"Bambu Lab A1","filamento":"PETG LARANJA (3D PRINTING FILAMENT)","gramas_gastas":0.92,"tempo_hrs":2,"peso_gr":0.92,"custo_material":0.07,"custo_energia":0.95,"custo_manutencao":0.55,"custo_roi":2.2,"custo_falhas":0,"custo_dep":2.43,"custo_producao":6.2,"custo_hora_op":6.75,"custo_adicional":2.6,"custo_total":15.55,"sug_atacado":23.32,"sug_varejo":34.2,"fin_atacado":24,"fin_varejo":35,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":8.45,"luc_varejo":19.45,"marg_atacado":35.2,"marg_varejo":55.6,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2.5,"data":"2026-07-18","id":577},
+    {"produto":"SIMBOLO DE % 50CM BRANCO DENTAL","impressora":"Bambu Lab A1","filamento":"PETG BRANCO DENTAL (VOOLT3D)","gramas_gastas":897.14,"tempo_hrs":30,"peso_gr":897.14,"custo_material":56.47,"custo_energia":14.25,"custo_manutencao":8.25,"custo_roi":33,"custo_falhas":2.82,"custo_dep":2.43,"custo_producao":117.22,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":119.82,"sug_atacado":179.73,"sug_varejo":263.61,"fin_atacado":180,"fin_varejo":264,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":60.18,"luc_varejo":144.18,"marg_atacado":33.4,"marg_varejo":54.6,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-18","id":578},
+    {"produto":"BOLA INFINITA SENSORIAL 6,5CM DOURADA","impressora":"Bambu Lab A1","filamento":"PLA DOURADO (VOOLT3D PLA V-SILK PREMIUM)","gramas_gastas":89.66,"tempo_hrs":4.58,"peso_gr":89.66,"custo_material":12.54,"custo_energia":2.18,"custo_manutencao":1.26,"custo_roi":5.04,"custo_falhas":0.63,"custo_dep":2.43,"custo_producao":24.07,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":26.67,"sug_atacado":40.01,"sug_varejo":58.68,"fin_atacado":41,"fin_varejo":59,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":14.33,"luc_varejo":32.33,"marg_atacado":35,"marg_varejo":54.8,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-18","id":579},
+    {"produto":"ESTRELA SENSORIAL GIRATÓRIA 11CM 9,5X9,5X11 RAINBOW CANDY COLOR","impressora":"Bambu Lab A1","filamento":"PLA RAINBOW CANDY COLORS (MULTFILA)","gramas_gastas":28.48,"tempo_hrs":3.27,"peso_gr":28.48,"custo_material":5.24,"custo_energia":1.55,"custo_manutencao":0.9,"custo_roi":3.6,"custo_falhas":0.26,"custo_dep":2.43,"custo_producao":13.98,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":16.58,"sug_atacado":24.87,"sug_varejo":36.48,"fin_atacado":25,"fin_varejo":37,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":8.42,"luc_varejo":20.42,"marg_atacado":33.7,"marg_varejo":55.2,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-18","id":580},
+    {"produto":"ESTRELA SENSORIAL GIRATÓRIA 12CM 12X12X12","impressora":"Bambu Lab A1","filamento":"PLA RAINBOW CANDY COLORS (MULTFILA)","gramas_gastas":48.32,"tempo_hrs":4.4,"peso_gr":48.32,"custo_material":8.89,"custo_energia":2.09,"custo_manutencao":1.21,"custo_roi":4.84,"custo_falhas":0.44,"custo_dep":2.43,"custo_producao":19.9,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":22.5,"sug_atacado":33.76,"sug_varejo":49.51,"fin_atacado":34,"fin_varejo":50,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":11.5,"luc_varejo":27.5,"marg_atacado":33.8,"marg_varejo":55,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-18","id":581},
+    {"produto":"ORGANIZADOR P/ 3 MARC/APAG/SOL LARANJA","impressora":"Bambu Lab A1","filamento":"PETG LARANJA (3D PRINTING FILAMENT)","gramas_gastas":73.89,"tempo_hrs":3.21,"peso_gr":73.89,"custo_material":7.32,"custo_energia":1.52,"custo_manutencao":0.88,"custo_roi":3.53,"custo_falhas":0.37,"custo_dep":2.43,"custo_producao":16.05,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":18.65,"sug_atacado":27.97,"sug_varejo":41.03,"fin_atacado":28,"fin_varejo":42,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":9.35,"luc_varejo":23.35,"marg_atacado":33.4,"marg_varejo":55.6,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-18","id":582},
+    {"produto":"ORGANIZADOR P/ 5 TAMPAS PANELA VERMELHO","impressora":"Bambu Lab A1","filamento":"ABS VERMELHO (ONYON3D)","gramas_gastas":64.88,"tempo_hrs":3.37,"peso_gr":64.88,"custo_material":5.87,"custo_energia":1.6,"custo_manutencao":0.93,"custo_roi":3.71,"custo_falhas":0.29,"custo_dep":2.43,"custo_producao":14.83,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":17.43,"sug_atacado":26.14,"sug_varejo":38.34,"fin_atacado":27,"fin_varejo":39,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":9.57,"luc_varejo":21.57,"marg_atacado":35.5,"marg_varejo":55.3,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-18","id":583},
+    {"produto":"ORGANIZADOR P/ 5 TAMPAS PANELA VERMELHO PETG","impressora":"Bambu Lab A1","filamento":"PETG VERMELHO (3D PRINTER FILAMENT)","gramas_gastas":79.23,"tempo_hrs":4.08,"peso_gr":79.23,"custo_material":7.29,"custo_energia":1.94,"custo_manutencao":1.12,"custo_roi":4.49,"custo_falhas":0.36,"custo_dep":2.43,"custo_producao":17.63,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":20.23,"sug_atacado":30.35,"sug_varejo":44.51,"fin_atacado":31,"fin_varejo":45,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":10.77,"luc_varejo":24.77,"marg_atacado":34.7,"marg_varejo":55,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-18","id":584},
+    {"produto":"POLVO INFINITO SENSORIAL 5CM DUAL COLOR AZ/RX","impressora":"Bambu Lab A1","filamento":"PLA RAINBOW CANDY COLORS (MULTFILA)","gramas_gastas":60,"tempo_hrs":3.3,"peso_gr":60,"custo_material":11.04,"custo_energia":1.57,"custo_manutencao":0.91,"custo_roi":3.63,"custo_falhas":0.55,"custo_dep":2.43,"custo_producao":20.13,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":22.73,"sug_atacado":34.09,"sug_varejo":50,"fin_atacado":35,"fin_varejo":50,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":12.27,"luc_varejo":27.27,"marg_atacado":35.1,"marg_varejo":54.5,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-18","id":585},
+    {"produto":"ESTRELA FLEXÍVEL 13CM","impressora":"Bambu Lab A1","filamento":"PLA RAINBOW CANDY COLORS (MULTFILA)","gramas_gastas":120,"tempo_hrs":13,"peso_gr":120,"custo_material":22.08,"custo_energia":6.17,"custo_manutencao":3.58,"custo_roi":14.3,"custo_falhas":1.1,"custo_dep":2.43,"custo_producao":49.66,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":52.26,"sug_atacado":78.39,"sug_varejo":114.98,"fin_atacado":79,"fin_varejo":115,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":26.74,"luc_varejo":62.74,"marg_atacado":33.8,"marg_varejo":54.6,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-18","id":586},
+    {"produto":"ESTRELA DO MAR FLEXÍVEL 13CM DUOL COLOR AZ/RX","impressora":"Bambu Lab A1","filamento":"PLA RAINBOW CANDY COLORS (MULTFILA)","gramas_gastas":71,"tempo_hrs":6,"peso_gr":71,"custo_material":13.06,"custo_energia":2.85,"custo_manutencao":1.65,"custo_roi":6.6,"custo_falhas":0.65,"custo_dep":2.43,"custo_producao":27.24,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":29.84,"sug_atacado":44.77,"sug_varejo":65.66,"fin_atacado":45,"fin_varejo":66,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":15.16,"luc_varejo":36.16,"marg_atacado":33.7,"marg_varejo":54.8,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-18","id":587},
+    {"produto":"SUPORTE P/ 20 OVOS DISPENSER ROLANTE 4 ANDARES PRATA","impressora":"Bambu Lab A1","filamento":"PETG PRATA (GENER TECH)","gramas_gastas":298.25,"tempo_hrs":12.04,"peso_gr":298.25,"custo_material":23.56,"custo_energia":5.72,"custo_manutencao":3.31,"custo_roi":13.24,"custo_falhas":1.18,"custo_dep":2.43,"custo_producao":49.44,"custo_hora_op":0.5,"custo_adicional":2.1,"custo_total":52.04,"sug_atacado":78.06,"sug_varejo":114.49,"fin_atacado":79,"fin_varejo":115,"taxa_mkt_a":0,"taxa_mkt_v":0,"luc_atacado":26.96,"luc_varejo":62.96,"marg_atacado":34.1,"marg_varejo":54.7,"markup_atacado":1.5,"markup_varejo":2.2,"embalagem":2,"data":"2026-07-20","id":588},
   ],
   impressoras:[
     {"id":1,"marca":"Bambu Lab A1","valor":5500,"meses_retorno":10,"hrs_dia":20,"dias_mes":25,"potencia_kw":0.5,"nivel_desgaste":30,"perc_falhas":5,"tarifa_kwh":0.95,"dep_const":2058.333333},
   ],
-  nextId:398,
-  nextPrecId:571,
+  nextId:452,
+  nextPrecId:589,
   sortProducao:{col:'data',dir:-1},
   sortVendas:{col:'data',dir:-1},
   sortPrec:{col:'produto',dir:1},
   sortEstoque:{col:'produto',dir:1},
+  dashFiltroMes:'todos',
 };
 
 function save(){
@@ -530,6 +602,7 @@ function load(){
       S.nextPrecId = Math.max(500, ...(S.db_precificacao.map(x=>x.id||0).concat([0]))) + 1;
       // Restaura outros campos simples
       if(parsed.page) S.page = parsed.page;
+      if(parsed.dashFiltroMes) S.dashFiltroMes = parsed.dashFiltroMes;
       // Sempre reaplica impressoras do código para garantir campos corretos
       S.impressoras=[
         {id:1,marca:'Bambu Lab A1',valor:5500,meses_retorno:10,hrs_dia:20,dias_mes:25,potencia_kw:0.5,nivel_desgaste:30,perc_falhas:5,tarifa_kwh:0.95,dep_const:2058.333333},
@@ -567,6 +640,22 @@ function gdriveSetStatus(status, msg){
   if(el){ el.innerHTML=`<i class="ti ${icon}" style="font-size:14px" aria-hidden="true"></i><span class="gdrive-label">${label}</span>`; el.className='btn gdrive-btn gdrive-'+status; el.title=label; }
   const elm=document.getElementById('gdrive-status-mobile');
   if(elm){ elm.className='ti '+icon+' gdrive-mob gdrive-'+status; elm.title=label; }
+  gdriveLastStatus=status;
+  gdriveRenderReminder(status);
+}
+
+function gdriveRenderReminder(status){
+  const wrap=document.getElementById('gdrive-reminder-wrap');
+  if(!wrap) return; // só existe no Painel Geral
+  if(status==='off'||status==='error'){
+    wrap.innerHTML=`<div class="install-banner" style="border-color:var(--danger)">
+      <i class="ti ti-cloud-off" style="color:var(--danger)" aria-hidden="true"></i>
+      <div class="install-text"><strong>Google Drive não conectado</strong><span>Sem isso, seus dados ficam só neste navegador e podem se perder numa limpeza de cache.</span></div>
+      <button class="btn btn-primary" style="white-space:nowrap" onclick="gdriveButtonClick()">Conectar agora</button>
+    </div>`;
+  } else {
+    wrap.innerHTML='';
+  }
 }
 
 function gdriveInit(){
@@ -667,18 +756,18 @@ async function gdriveSyncOnConnect(){
       const localTime=meta.updatedAt?new Date(meta.updatedAt).getTime():0;
       if(cloudTime>localTime){
         const cloudData=await gdriveDownload(file.id);
-        const contar=(o)=>(o?.producao?.length||0)+(o?.vendas?.length||0)+(o?.estoque?.length||0);
+        const contar=(o)=>(o?.producao?.length||0)+(o?.vendas?.length||0)+(o?.estoque?.length||0)+(o?.saidas?.length||0)+(o?.filamentos?.length||0)+(o?.db_precificacao?.length||0)+(o?.patrimonio?.length||0)+(o?.impressoras?.length||0);
         const localCount=contar(S), cloudCount=contar(cloudData);
-        if(cloudCount + 3 < localCount){
-          // A nuvem parece ter bem menos registros que o dispositivo local —
-          // pode ser uma versão antiga/errada. Não sobrescreve sem confirmar.
+        if(cloudCount < localCount){
+          // A nuvem tem MENOS registros que o dispositivo local em qualquer categoria —
+          // não sobrescreve sem confirmar, pra nunca mais perder lançamentos.
           const manterLocal=confirm(
             `⚠️ Possível conflito de dados:\n\n`+
-            `Neste dispositivo: ${localCount} registros (produção+vendas+estoque)\n`+
-            `Na nuvem: ${cloudCount} registros\n\n`+
-            `A versão da nuvem parece desatualizada.\n\n`+
+            `Neste dispositivo: ${localCount} registros no total\n`+
+            `Na nuvem: ${cloudCount} registros no total\n\n`+
+            `A versão da nuvem parece ter menos dados.\n\n`+
             `Clique OK para MANTER os dados deste dispositivo e corrigir a nuvem.\n`+
-            `Clique Cancelar para usar mesmo assim os dados da nuvem.`
+            `Clique Cancelar para usar mesmo assim os dados da nuvem (não recomendado se não tiver certeza).`
           );
           if(manterLocal){
             await gdrivePush(true);
@@ -715,16 +804,17 @@ function gdriveQueuePush(){
   if(!gdriveSignedIn) return;
   clearTimeout(gdrivePushTimer);
   gdriveRetryCount=0;
+  gdrivePendingSync=true;
   gdriveSetStatus('syncing');
   gdrivePushTimer=setTimeout(()=>gdrivePush(false), 1200);
 }
 
-let gdriveRetryCount=0;
+let gdriveRetryCount=0, gdrivePendingSync=false;
 async function gdrivePush(silent){
   if(!gdriveSignedIn) return;
   try{
     const ok=await gdriveEnsureToken();
-    if(!ok){ gdriveSetStatus('error','Sessão expirada'); return; }
+    if(!ok){ gdriveSetStatus('error','Sessão expirada'); gdrivePendingSync=false; return; }
     if(!gdriveFileId){
       const file=await gdriveFindFile();
       if(file) gdriveFileId=file.id;
@@ -734,6 +824,7 @@ async function gdrivePush(silent){
     gdriveSaveMeta({updatedAt:new Date().toISOString()});
     gdriveSetStatus('synced');
     gdriveRetryCount=0;
+    gdrivePendingSync=false;
   }catch(e){
     console.warn('Erro ao enviar para nuvem:', e);
     gdriveSetStatus('error','Erro ao enviar — tentando novamente...');
@@ -743,13 +834,14 @@ async function gdrivePush(silent){
       gdrivePushTimer=setTimeout(()=>gdrivePush(false), 4000*gdriveRetryCount);
     } else {
       gdriveSetStatus('error','Falha ao sincronizar — dados seguros localmente');
+      gdrivePendingSync=false;
     }
   }
 }
 
-// Evita fechar a aba com uma sincronização pendente sem avisar
+// Evita fechar a aba com uma sincronização realmente pendente, sem avisar à toa
 window.addEventListener('beforeunload', (e)=>{
-  if(gdriveSignedIn && (gdrivePushTimer || gdriveBusy)){
+  if(gdriveSignedIn && (gdrivePendingSync || gdriveBusy)){
     e.preventDefault();
     e.returnValue='';
   }
@@ -773,11 +865,11 @@ async function gdriveCheckRemote(){
     const localTime=localMeta.updatedAt?new Date(localMeta.updatedAt).getTime():0;
     if(cloudTime>localTime+2000){
       const cloudData=await gdriveDownload(gdriveFileId);
-      const contar=(o)=>(o?.producao?.length||0)+(o?.vendas?.length||0)+(o?.estoque?.length||0);
+      const contar=(o)=>(o?.producao?.length||0)+(o?.vendas?.length||0)+(o?.estoque?.length||0)+(o?.saidas?.length||0)+(o?.filamentos?.length||0)+(o?.db_precificacao?.length||0)+(o?.patrimonio?.length||0)+(o?.impressoras?.length||0);
       const localCount=contar(S), cloudCount=contar(cloudData);
-      if(cloudCount + 3 < localCount){
-        // Nuvem com bem menos dados que o local — não sobrescreve em segundo plano.
-        // Marca erro discreto; a checagem completa (com confirmação) roda na próxima conexão manual.
+      if(cloudCount < localCount){
+        // Nuvem com menos dados que o local em qualquer categoria — nunca sobrescreve
+        // em segundo plano. Só um ajuste manual (reconectar) pode resolver esse caso.
         console.warn('gdriveCheckRemote: nuvem com menos registros que local, ignorando pull automático.');
         return;
       }
@@ -901,41 +993,78 @@ function render(){
   else if(S.page==='materiais') c.innerHTML=renderMateriais();
   else if(S.page==='relatorios') c.innerHTML=renderRelatorios();
   else if(S.page==='precificacao') c.innerHTML=renderPrecificacao();
+  if(S.page==='dashboard') gdriveRenderReminder(gdriveLastStatus);
 }
+let gdriveLastStatus='off';
 
 // ─ DASHBOARD ─
+function mesesDisponiveis(){
+  const datas=[
+    ...S.vendas.map(v=>v.data),
+    ...S.producao.map(p=>p.data),
+    ...(S.saidas||[]).map(s=>s.vencimento||s.data),
+  ].filter(Boolean);
+  const meses=[...new Set(datas.map(d=>d.slice(0,7)))].sort().reverse();
+  return meses;
+}
+function nomeMes(ym){
+  const [ano,mes]=ym.split('-');
+  const nomes=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  return `${nomes[parseInt(mes,10)-1]} de ${ano}`;
+}
+function setDashFiltroMes(v){
+  S.dashFiltroMes=v;
+  save();
+  render();
+}
+
 function renderDashboard(){
-  const totalV=S.vendas.reduce((a,v)=>a+v.valor,0);
-  const totalP=S.producao.reduce((a,p)=>a+p.qtd,0);
+  const filtroMes=S.dashFiltroMes||'todos';
+  const noMes=(dataStr)=>filtroMes==='todos'||(dataStr&&dataStr.slice(0,7)===filtroMes);
+  const vendasF=S.vendas.filter(v=>noMes(v.data));
+  const producaoF=S.producao.filter(p=>noMes(p.data));
+  const saidasF=(S.saidas||[]).filter(s=>noMes(s.vencimento||s.data));
+  const meses=mesesDisponiveis();
+
+  const totalV=vendasF.reduce((a,v)=>a+v.valor,0);
+  const totalP=producaoF.reduce((a,p)=>a+p.qtd,0);
   const totalE=S.estoque.reduce((a,e)=>a+e.qtd,0);
   const totalEVal=S.estoque.reduce((a,e)=>a+e.qtd*e.preco,0);
-  const ml=S.vendas.filter(v=>v.canal==='Mercado Livre').reduce((a,v)=>a+v.valor,0);
-  const sh=S.vendas.filter(v=>v.canal==='Shopee').reduce((a,v)=>a+v.valor,0);
-  const ig=S.vendas.filter(v=>v.canal==='Instagram').reduce((a,v)=>a+v.valor,0);
-  const wpp=S.vendas.filter(v=>v.canal==='WhatsApp').reduce((a,v)=>a+v.valor,0);
-  const vd=S.vendas.filter(v=>v.canal==='Venda Direta').reduce((a,v)=>a+v.valor,0);
-  const atac=S.vendas.filter(v=>v.tipo==='Atacado').reduce((a,v)=>a+v.valor,0);
-  const vare=S.vendas.filter(v=>v.tipo==='Varejo').reduce((a,v)=>a+v.valor,0);
+  const ml=vendasF.filter(v=>v.canal==='Mercado Livre').reduce((a,v)=>a+v.valor,0);
+  const sh=vendasF.filter(v=>v.canal==='Shopee').reduce((a,v)=>a+v.valor,0);
+  const ig=vendasF.filter(v=>v.canal==='Instagram').reduce((a,v)=>a+v.valor,0);
+  const wpp=vendasF.filter(v=>v.canal==='WhatsApp').reduce((a,v)=>a+v.valor,0);
+  const vd=vendasF.filter(v=>v.canal==='Venda Direta').reduce((a,v)=>a+v.valor,0);
+  const atac=vendasF.filter(v=>v.tipo==='Atacado').reduce((a,v)=>a+v.valor,0);
+  const vare=vendasF.filter(v=>v.tipo==='Varejo').reduce((a,v)=>a+v.valor,0);
   const totalC=ml+sh+ig+wpp+vd||1;
   const filAlert=alertCount();
-  const totalGramas=S.producao.reduce((a,p)=>a+(p.gramasTotal||0),0);
-  const ticket=totalV/(S.vendas.length||1);
+  const totalGramas=producaoF.reduce((a,p)=>a+(p.gramasTotal||0),0);
+  const ticket=totalV/(vendasF.length||1);
   const weekSales=[320,480,210,590,340,780,Math.round(totalV)];
   const maxW=Math.max(...weekSales);
   const dias=['Seg','Ter','Qua','Qui','Sex','Sáb','Hoje'];
-  const totalSaidasDash=(S.saidas||[]).filter(s=>s.pago).reduce((a,s)=>a+s.valor,0);
-  const totalPendenteDash=(S.saidas||[]).filter(s=>!s.pago).reduce((a,s)=>a+s.valor,0);
+  const totalSaidasDash=saidasF.filter(s=>s.pago).reduce((a,s)=>a+s.valor,0);
+  const totalPendenteDash=saidasF.filter(s=>!s.pago).reduce((a,s)=>a+s.valor,0);
   const saldoDash=totalV-totalSaidasDash;
   const prodByMat={PLA:0,PETG:0,TPU:0};
-  S.producao.forEach(p=>{if(prodByMat[p.material]!==undefined)prodByMat[p.material]+=p.qtd;});
+  producaoF.forEach(p=>{if(prodByMat[p.material]!==undefined)prodByMat[p.material]+=p.qtd;});
   return `
   <div id="install-banner-wrap"></div>
+  <div id="gdrive-reminder-wrap"></div>
+  <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-bottom:14px">
+    <label for="dash-filtro-mes" style="font-size:12px;color:var(--text3)">Período:</label>
+    <select id="dash-filtro-mes" onchange="setDashFiltroMes(this.value)" style="padding:6px 10px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--surface);color:var(--text);font-size:13px;font-family:inherit">
+      <option value="todos" ${filtroMes==='todos'?'selected':''}>Todos os períodos</option>
+      ${meses.map(m=>`<option value="${m}" ${filtroMes===m?'selected':''}>${nomeMes(m)}</option>`).join('')}
+    </select>
+  </div>
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-icon" style="background:var(--accent-bg)"><i class="ti ti-currency-dollar" style="color:var(--accent-text)" aria-hidden="true"></i></div>
       <div class="stat-label">Faturamento total</div>
       <div class="stat-value" style="color:var(--accent-text)">${fmtK(totalV)}</div>
-      <div class="stat-change up"><i class="ti ti-trending-up" style="font-size:11px" aria-hidden="true"></i>${S.vendas.length} vendas · Pagas: -${fmtK(totalSaidasDash)} · Pendentes: -${fmtK(totalPendenteDash)}</div>
+      <div class="stat-change up"><i class="ti ti-trending-up" style="font-size:11px" aria-hidden="true"></i>${vendasF.length} vendas · Pagas: -${fmtK(totalSaidasDash)} · Pendentes: -${fmtK(totalPendenteDash)}</div>
     </div>
     <div class="stat-card">
       <div class="stat-icon" style="background:var(--success-bg)"><i class="ti ti-printer" style="color:var(--success)" aria-hidden="true"></i></div>
@@ -964,12 +1093,12 @@ function renderDashboard(){
           <div style="flex:1;text-align:center;background:var(--atac-bg);border-radius:var(--radius);padding:10px 6px">
             <div style="font-size:10px;color:var(--atac);font-weight:600;text-transform:uppercase;margin-bottom:4px">Atacado</div>
             <div style="font-size:18px;font-weight:700;color:var(--atac)">${fmtK(atac)}</div>
-            <div style="font-size:10px;color:var(--atac);opacity:.7;margin-top:2px">${S.vendas.filter(v=>v.tipo==='Atacado').length} pedidos</div>
+            <div style="font-size:10px;color:var(--atac);opacity:.7;margin-top:2px">${vendasF.filter(v=>v.tipo==='Atacado').length} pedidos</div>
           </div>
           <div style="flex:1;text-align:center;background:var(--vare-bg);border-radius:var(--radius);padding:10px 6px">
             <div style="font-size:10px;color:var(--vare);font-weight:600;text-transform:uppercase;margin-bottom:4px">Varejo</div>
             <div style="font-size:18px;font-weight:700;color:var(--vare)">${fmtK(vare)}</div>
-            <div style="font-size:10px;color:var(--vare);opacity:.7;margin-top:2px">${S.vendas.filter(v=>v.tipo==='Varejo').length} pedidos</div>
+            <div style="font-size:10px;color:var(--vare);opacity:.7;margin-top:2px">${vendasF.filter(v=>v.tipo==='Varejo').length} pedidos</div>
           </div>
         </div>
         <div style="font-size:11px;color:var(--text3);text-align:center">Ticket médio: ${fmtK(ticket)}</div>
@@ -985,7 +1114,7 @@ function renderDashboard(){
       <div class="card">
         <div class="card-header"><div class="card-title">Consumo de filamento</div></div>
         ${Object.entries(prodByMat).map(([m,v])=>{
-          const g=S.producao.filter(p=>p.material===m).reduce((a,p)=>a+(p.gramasTotal||0),0);
+          const g=producaoF.filter(p=>p.material===m).reduce((a,p)=>a+(p.gramasTotal||0),0);
           const pct=totalP?Math.round(v/totalP*100):0;
           return `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>${matBadge(m)}</span><span style="font-size:11px;color:var(--text3)">${v} un · <strong>${g}g</strong></span></div><div class="progress"><div class="progress-bar pr-ok" style="width:${pct}%"></div></div></div>`;
         }).join('')}
@@ -1001,7 +1130,7 @@ function renderDashboard(){
         <div class="card-header"><div class="card-title">Últimas vendas</div><button class="btn" style="font-size:12px;padding:5px 10px" onclick="goTo('vendas')">Ver todas</button></div>
         <div class="table-wrap"><table>
           <thead><tr><th>Produto</th><th>Tipo</th><th>Canal</th><th>Qtd</th><th>Valor</th></tr></thead>
-          <tbody>${S.vendas.slice(-5).reverse().map(v=>`<tr>
+          <tbody>${vendasF.slice(-5).reverse().map(v=>`<tr>
             <td style="font-weight:500">${v.produto}</td>
             <td>${tipoBadge(v.tipo)}</td>
             <td>${canalBadge(v.canal)}</td>
@@ -2755,6 +2884,109 @@ function exportData(){
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download='print3d_backup_'+todayISO()+'.json';a.click();
   toast('Backup exportado!');
+}
+
+async function abrirHistoricoDrive(){
+  if(!gdriveSignedIn || !gdriveFileId){ toast('Conecte o Google Drive primeiro.','warn'); return; }
+  const mr=document.getElementById('modal-root');
+  mr.innerHTML=`<div class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal" style="max-width:560px" role="dialog">
+      <div class="modal-title">🕓 Histórico de versões na nuvem <button class="modal-close" onclick="closeModalD()">×</button></div>
+      <div id="hist-drive-body" style="margin-top:12px;font-size:13px;color:var(--text2)">Carregando histórico...</div>
+    </div>
+  </div>`;
+  try{
+    const ok=await gdriveEnsureToken();
+    if(!ok){ document.getElementById('hist-drive-body').innerHTML='Sessão expirada — reconecte o Google Drive e tente de novo.'; return; }
+    const res=await fetch(`https://www.googleapis.com/drive/v3/files/${gdriveFileId}/revisions?fields=revisions(id,modifiedTime,size)`,{headers:{Authorization:'Bearer '+gdriveAccessToken}});
+    if(!res.ok){ document.getElementById('hist-drive-body').innerHTML='Não foi possível carregar o histórico agora. Tente novamente em instantes.'; return; }
+    const data=await res.json();
+    const revs=(data.revisions||[]).sort((a,b)=>new Date(b.modifiedTime)-new Date(a.modifiedTime));
+    if(!revs.length){ document.getElementById('hist-drive-body').innerHTML='Nenhuma versão anterior encontrada.'; return; }
+    const linhas=revs.map(r=>{
+      const d=new Date(r.modifiedTime);
+      const dataFmt=d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+      const kb=r.size?Math.round(r.size/1024)+' KB':'';
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border2)">
+        <div><div style="font-weight:600">${dataFmt}</div><div style="font-size:11px;color:var(--text3)">${kb}</div></div>
+        <div style="display:flex;gap:6px">
+          <button class="btn" style="padding:5px 10px;font-size:12px" onclick="visualizarRevisao('${r.id}')">Ver conteúdo</button>
+          <button class="btn btn-primary" style="padding:5px 10px;font-size:12px" onclick="restaurarRevisao('${r.id}')">Restaurar</button>
+        </div>
+      </div>`;
+    }).join('');
+    document.getElementById('hist-drive-body').innerHTML=
+      `<div style="margin-bottom:10px">Encontradas ${revs.length} versões salvas. Escolha uma pra ver o conteúdo ou restaurar.</div>
+       <div id="hist-drive-lista">${linhas}</div>
+       <div id="hist-drive-preview" style="margin-top:14px"></div>`;
+  }catch(e){
+    console.warn('Erro ao carregar histórico do Drive:', e);
+    document.getElementById('hist-drive-body').innerHTML='Erro ao carregar histórico.';
+  }
+}
+
+async function visualizarRevisao(revId){
+  const box=document.getElementById('hist-drive-preview');
+  box.innerHTML='Carregando conteúdo...';
+  try{
+    const ok=await gdriveEnsureToken();
+    if(!ok){ box.innerHTML='Sessão expirada.'; return; }
+    const res=await fetch(`https://www.googleapis.com/drive/v3/files/${gdriveFileId}/revisions/${revId}?alt=media`,{headers:{Authorization:'Bearer '+gdriveAccessToken}});
+    if(!res.ok){ box.innerHTML='Não foi possível abrir esta versão.'; return; }
+    const d=await res.json();
+    const nSaidas=d.saidas?.length||0;
+    box.innerHTML=`<div style="background:var(--bg2);border-radius:8px;padding:10px;font-size:13px">
+      <b>Produção:</b> ${d.producao?.length||0} · <b>Vendas:</b> ${d.vendas?.length||0} · <b>Estoque:</b> ${d.estoque?.length||0} · <b>Saídas:</b> ${nSaidas} · <b>Filamentos:</b> ${d.filamentos?.length||0} · <b>Precificações:</b> ${d.db_precificacao?.length||0}
+    </div>
+    ${nSaidas>0?`<button class="btn btn-primary" style="margin-top:8px;padding:6px 12px;font-size:12px" onclick='restaurarSomenteSaidas(${JSON.stringify(revId)})'>Restaurar SOMENTE as Saídas desta versão (mantém o resto como está)</button>`:''}`;
+  }catch(e){ box.innerHTML='Erro ao carregar.'; }
+}
+
+async function restaurarSomenteSaidas(revId){
+  if(!confirm('Isso vai trazer de volta só os lançamentos de Saídas/Despesas desta versão antiga, mantendo Produção, Vendas, Estoque e o resto como estão agora.\n\nDeseja continuar?')) return;
+  try{
+    const ok=await gdriveEnsureToken();
+    if(!ok){ toast('Sessão expirada.','warn'); return; }
+    const res=await fetch(`https://www.googleapis.com/drive/v3/files/${gdriveFileId}/revisions/${revId}?alt=media`,{headers:{Authorization:'Bearer '+gdriveAccessToken}});
+    if(!res.ok){ toast('Não foi possível restaurar esta versão.','warn'); return; }
+    const d=await res.json();
+    if(Array.isArray(d.saidas)) S.saidas=d.saidas;
+    save();
+    render();
+    if(gdriveSignedIn){ clearTimeout(gdrivePushTimer); gdrivePush(false); }
+    closeModalD();
+    toast(`${d.saidas?.length||0} saídas restauradas! ☁️`);
+  }catch(e){
+    console.warn('Erro ao restaurar saídas:', e);
+    toast('Erro ao restaurar as saídas.','warn');
+  }
+}
+
+async function restaurarRevisao(revId){
+  if(!confirm('Isso vai SUBSTITUIR os dados atuais (local e nuvem) pelo conteúdo desta versão antiga.\n\nDeseja continuar?')) return;
+  try{
+    const ok=await gdriveEnsureToken();
+    if(!ok){ toast('Sessão expirada.','warn'); return; }
+    const res=await fetch(`https://www.googleapis.com/drive/v3/files/${gdriveFileId}/revisions/${revId}?alt=media`,{headers:{Authorization:'Bearer '+gdriveAccessToken}});
+    if(!res.ok){ toast('Não foi possível restaurar esta versão.','warn'); return; }
+    const d=await res.json();
+    if(Array.isArray(d.producao))        S.producao=d.producao;
+    if(Array.isArray(d.vendas))          S.vendas=d.vendas;
+    if(Array.isArray(d.estoque))         S.estoque=d.estoque;
+    if(Array.isArray(d.filamentos))      S.filamentos=d.filamentos;
+    if(Array.isArray(d.db_precificacao)) S.db_precificacao=d.db_precificacao;
+    if(Array.isArray(d.saidas))          S.saidas=d.saidas;
+    if(Array.isArray(d.patrimonio))      S.patrimonio=d.patrimonio;
+    if(Array.isArray(d.impressoras))     S.impressoras=d.impressoras;
+    save();
+    render();
+    if(gdriveSignedIn){ clearTimeout(gdrivePushTimer); gdrivePush(false); }
+    closeModalD();
+    toast('Versão restaurada com sucesso! ☁️');
+  }catch(e){
+    console.warn('Erro ao restaurar revisão:', e);
+    toast('Erro ao restaurar esta versão.','warn');
+  }
 }
 
 function importDataClick(){
