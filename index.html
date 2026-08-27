@@ -3460,10 +3460,23 @@ function confirmarLancarProducao(idx){
   const data=document.getElementById('lp-data')?.value||todayISO();
   if(qtd<1){toast('Quantidade inválida!','err');return;}
 
-  // Monta linhas de filamento (multicolor se houver, senão o único filamento_id)
-  const filRows = (p.filamentos_prec&&p.filamentos_prec.length)
+  // Monta linhas de filamento (multicolor se houver, senão o único filamento_id,
+  // e como última tentativa casa pelo texto descritivo salvo — para precificações antigas
+  // que não guardaram o ID diretamente).
+  let filRows = (p.filamentos_prec&&p.filamentos_prec.length)
     ? p.filamentos_prec
     : (p.filamento_id ? [{filamento_id:p.filamento_id, gramas:p.gramas_gastas||p.peso_gr||0}] : []);
+
+  if(filRows.length===0 && p.filamento){
+    const alvo=p.filamento.trim().toLowerCase();
+    const achado=S.filamentos.find(f=>`${f.tipo} ${f.cor} (${f.marca})`.trim().toLowerCase()===alvo);
+    if(achado){
+      const gramas=p.gramas_gastas||p.peso_gr||p.peso||0;
+      filRows=[{filamento_id:achado.id, gramas}];
+      toast(`Filamento reconhecido pelo nome: ${achado.tipo} ${achado.cor} (${achado.marca})`,'warn');
+    }
+  }
+
   if(filRows.length===0){toast('Esta precificação não tem filamento associado — lance manualmente em Produção.','err');return;}
 
   // Verifica estoque de filamento suficiente
