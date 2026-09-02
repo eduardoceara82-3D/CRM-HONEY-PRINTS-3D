@@ -944,11 +944,21 @@ function renderVendas(){
   const ig=S.vendas.filter(v=>v.canal==='Instagram').reduce((a,v)=>a+v.valor,0);
   const wpp=S.vendas.filter(v=>v.canal==='WhatsApp').reduce((a,v)=>a+v.valor,0);
   const vd=S.vendas.filter(v=>v.canal==='Venda Direta').reduce((a,v)=>a+v.valor,0);
+  // Pendentes de recebimento (recebido===false explicitamente)
+  const pendenteVendas=S.vendas.filter(v=>v.recebido===false);
+  const totalPendente=pendenteVendas.reduce((a,v)=>a+v.valor,0);
+  const totalRecebido=total-totalPendente;
   return `
-  <div class="stats-grid">
+  <div class="stats-grid" style="grid-template-columns:repeat(5,1fr)">
     <div class="stat-card"><div class="stat-label">Faturamento total</div><div class="stat-value" style="color:var(--success)">${fmtK(total)}</div><div class="stat-change neutral">Ticket médio: ${fmtK(ticket)}</div></div>
-    <div class="stat-card"><div class="stat-label">Atacado</div><div class="stat-value" style="color:var(--atac)">${fmtK(atac)}</div><div class="stat-change neutral">${S.vendas.filter(v=>v.tipo==='Atacado').length} pedidos</div></div>
-    <div class="stat-card"><div class="stat-label">Varejo</div><div class="stat-value" style="color:var(--vare)">${fmtK(vare)}</div><div class="stat-change neutral">${S.vendas.filter(v=>v.tipo==='Varejo').length} pedidos</div></div>
+    <div class="stat-card"><div class="stat-label">✅ Recebido</div><div class="stat-value" style="color:var(--success)">${fmtK(totalRecebido)}</div><div class="stat-change neutral">${S.vendas.filter(v=>v.recebido!==false).length} vendas</div></div>
+    <div class="stat-card"><div class="stat-label">⏳ A receber</div><div class="stat-value" style="color:var(--warning)">${fmtK(totalPendente)}</div><div class="stat-change neutral">${pendenteVendas.length} venda${pendenteVendas.length!==1?'s':''} pendente${pendenteVendas.length!==1?'s':''}</div></div>
+    <div class="stat-card"><div class="stat-label">Atacado / Varejo</div>
+      <div style="font-size:12px;margin-top:6px;display:flex;flex-direction:column;gap:4px">
+        <div style="display:flex;justify-content:space-between"><span class="badge b-atac">Atacado</span><span style="font-weight:500">${fmtK(atac)}</span></div>
+        <div style="display:flex;justify-content:space-between"><span class="badge b-vare">Varejo</span><span style="font-weight:500">${fmtK(vare)}</span></div>
+      </div>
+    </div>
     <div class="stat-card"><div class="stat-label">Por canal</div>
       <div style="font-size:12px;margin-top:6px;display:flex;flex-direction:column;gap:4px">
         <div style="display:flex;justify-content:space-between;align-items:center"><span class="badge b-ml">ML</span><span style="font-weight:500">${fmtK(ml)}</span></div>
@@ -959,7 +969,6 @@ function renderVendas(){
       </div>
     </div>
   </div>
-  <div class="card">
     <div class="card-header">
       <div class="card-title">Todas as vendas</div>
       <button class="btn btn-primary" onclick="openModal('venda')"><i class="ti ti-plus" style="font-size:13px" aria-hidden="true"></i>Nova venda</button>
@@ -973,23 +982,33 @@ function renderVendas(){
         <th>Pagamento</th>
         ${thSort('sortVendas','qtd','Qtd')}
         ${thSort('sortVendas','valor','Valor')}
+        <th>Recebimento</th>
         ${thSort('sortVendas','data','Data')}
         <th></th>
       </tr></thead>
-      <tbody>${sortArr(S.vendas, S.sortVendas.col, S.sortVendas.dir).map(v=>`<tr>
+      <tbody>${sortArr(S.vendas, S.sortVendas.col, S.sortVendas.dir).map(v=>{
+        // compatibilidade: vendas antigas sem campo recebido = já recebidas
+        const recebido = v.recebido===false ? false : true;
+        return `<tr style="${!recebido?'background:var(--warning-bg,#fffbf0)':''}">
         <td style="font-weight:500">${v.produto}</td>
         <td style="color:var(--text2)">${v.cliente||'<span style="color:var(--text3);font-style:italic">—</span>'}</td>
         <td>${tipoBadge(v.tipo)}</td>
         <td>${canalBadge(v.canal)}</td>
         <td>${pgtoBadge(v.pgto)}</td>
         <td>${v.qtd}</td>
-        <td style="color:var(--success);font-weight:500">${fmt(v.valor)}</td>
+        <td style="color:${recebido?'var(--success)':'var(--warning)'};font-weight:500">${fmt(v.valor)}</td>
+        <td>
+          ${recebido
+            ? `<span style="font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;background:#1D9E7522;color:#1D9E75;border:1px solid #1D9E7544">✅ Recebido</span>`
+            : `<button onclick="confirmarRecebimento(${v.id})" style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:#EF9F2722;color:#EF9F27;border:1px solid #EF9F2766;cursor:pointer;white-space:nowrap">⏳ Confirmar</button>`
+          }
+        </td>
         <td style="color:var(--text3)">${dtFmt(v.data)}</td>
         <td>
           <button class="edit-btn" onclick="editVenda(${v.id})" title="Editar" aria-label="Editar"><i class="ti ti-edit" aria-hidden="true"></i></button>
           <button class="delete-btn" onclick="delVenda(${v.id})" title="Remover" aria-label="Remover"><i class="ti ti-trash" aria-hidden="true"></i></button>
         </td>
-      </tr>`).join('')}</tbody>
+      </tr>`;}).join('')}</tbody>
     </table></div>
     ${S.vendas.length===0?`<div class="empty"><i class="ti ti-shopping-cart" aria-hidden="true"></i><p>Nenhuma venda ainda</p><span>Clique em "Nova venda" para registrar</span></div>`:''}
   </div>`;
@@ -2445,6 +2464,53 @@ function delProducao(id){
   save();toast('Lançamento removido. Estoque e filamento revertidos.','warn');render();
 }
 
+function confirmarRecebimento(id){
+  const v=S.vendas.find(x=>x.id===id);if(!v)return;
+  const mr=document.getElementById('modal-root');
+  mr.innerHTML=`<div class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal" style="max-width:380px" role="dialog">
+      <div class="modal-title">✅ Confirmar recebimento <button class="modal-close" onclick="closeModalD()">×</button></div>
+      <div style="color:var(--text2);margin-bottom:14px;font-size:14px">
+        <strong>${v.produto}</strong><br>
+        Valor: <strong style="color:var(--success)">${fmt(v.valor)}</strong>
+        ${v.cliente?' · '+v.cliente:''}
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Forma de pagamento</label>
+          <select class="form-control" id="cr-pgto">
+            <option value="PIX">💸 PIX</option>
+            <option value="Dinheiro">💵 Dinheiro</option>
+            <option value="Cartão Débito">💳 Cartão Débito</option>
+            <option value="Cartão Crédito">💳 Cartão Crédito</option>
+            <option value="Transferência">🏦 Transferência</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Data do recebimento</label>
+          <input class="form-control" id="cr-data" type="date" value="${todayISO()}">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeModalD()">Cancelar</button>
+        <button class="btn btn-primary" onclick="salvarRecebimento(${id})">
+          <i class="ti ti-check" style="font-size:13px"></i>Confirmar recebimento
+        </button>
+      </div>
+    </div></div>`;
+}
+
+function salvarRecebimento(id){
+  const v=S.vendas.find(x=>x.id===id);if(!v)return;
+  v.recebido=true;
+  v.pgto=document.getElementById('cr-pgto')?.value||v.pgto||'PIX';
+  v.data_recebimento=document.getElementById('cr-data')?.value||todayISO();
+  save();closeModalD();
+  toast(`✅ Recebimento confirmado: ${fmt(v.valor)} de ${v.produto}`);
+  render();
+}
+
 function delVenda(id){
   if(!confirm('Remover esta venda? O estoque será revertido.'))return;
   const v=S.vendas.find(x=>x.id===id);
@@ -3423,11 +3489,11 @@ function abrirLancarProducao(idx){
     <div class="modal" style="max-width:460px" role="dialog" aria-label="Lançar produção">
       <div class="modal-title">🚀 Lançar "${p.produto}" <button class="modal-close" onclick="closeModalD()">×</button></div>
       <div class="info-box" style="margin-bottom:12px"><i class="ti ti-bulb" aria-hidden="true"></i><span>Isso vai criar o lançamento em Produção (descontando filamento e alimentando o Estoque automaticamente). Tudo fica editável depois, em Produção ou Vendas.</span></div>
-      <div class="form-group"><label class="form-label">Quantidade produzida</label><input class="form-control" id="lp-qtd" type="number" value="1" min="1" step="1"></div>
+      <div class="form-group"><label class="form-label">Quantidade produzida</label><input class="form-control" id="lp-qtd" type="number" value="1" min="1" step="1" oninput="lpAtualizarValor(${idx})"></div>
       <div class="form-group"><label class="form-label">Data</label><input class="form-control" id="lp-data" type="date" value="${todayISO()}"></div>
       <label style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;margin:14px 0 10px;cursor:pointer">
         <input type="checkbox" id="lp-venda" onchange="document.getElementById('lp-venda-fields').style.display=this.checked?'block':'none'" style="width:16px;height:16px">
-        💰 Também registrar como venda agora
+        💰 Também registrar venda
       </label>
       <div id="lp-venda-fields" style="display:none;border:1px solid var(--border);border-radius:var(--radius);padding:10px;margin-bottom:10px">
         <div class="form-row">
@@ -3438,7 +3504,20 @@ function abrirLancarProducao(idx){
           <div class="form-group"><label class="form-label">Cliente (opcional)</label><input class="form-control" id="lp-cliente" placeholder="Nome do cliente"></div>
           <div class="form-group"><label class="form-label">Pagamento</label><select class="form-control" id="lp-pgto"><option value="PIX">💸 PIX</option><option value="Dinheiro">💵 Dinheiro</option><option value="Cartão Débito">💳 Cartão Débito</option><option value="Cartão Crédito">💳 Cartão Crédito</option><option value="Transferência">🏦 Transferência</option><option value="Outro">Outro</option></select></div>
         </div>
-        <div class="form-group" style="margin-bottom:0"><label class="form-label">Valor total da venda (R$)</label><input class="form-control" id="lp-valor" type="number" min="0" step="0.5" value="${p.fin_varejo}"></div>
+        <div class="form-group"><label class="form-label">Valor total da venda (R$)</label><input class="form-control" id="lp-valor" type="number" min="0" step="0.5" value="${p.fin_varejo}"></div>
+        <div style="background:var(--surface2);border-radius:var(--radius);padding:10px;margin-top:8px">
+          <label style="font-size:13px;font-weight:600;color:var(--text2);display:block;margin-bottom:8px">Status do recebimento:</label>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+              <input type="radio" name="lp-receb" id="lp-receb-pago" value="pago" checked style="width:15px;height:15px">
+              <span>✅ <strong>Já recebi</strong> — venda paga agora</span>
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+              <input type="radio" name="lp-receb" id="lp-receb-pendente" value="pendente" style="width:15px;height:15px">
+              <span>⏳ <strong>Ainda não recebi</strong> — vou dar baixa quando receber</span>
+            </label>
+          </div>
+        </div>
       </div>
       <div class="modal-footer"><button class="btn" onclick="closeModalD()">Cancelar, só salvar preço</button><button class="btn btn-primary" onclick="confirmarLancarProducao(${idx})"><i class="ti ti-rocket" style="font-size:13px" aria-hidden="true"></i>Confirmar lançamento</button></div>
     </div></div>`;
@@ -3521,7 +3600,7 @@ function confirmarLancarProducao(idx){
 
   let msg=`✅ ${qtd}x ${p.produto} lançado em Produção! ${gramasTotal}g descontados.`;
 
-  // 4) Se marcado, registra também a Venda (e desconta do Estoque)
+  // 4) Se marcado, registra também a Venda
   const registrarVenda=document.getElementById('lp-venda')?.checked;
   if(registrarVenda){
     const tipo=document.getElementById('lp-tipo')?.value||'Varejo';
@@ -3529,11 +3608,21 @@ function confirmarLancarProducao(idx){
     const cliente=(document.getElementById('lp-cliente')?.value||'').trim();
     const pgto=document.getElementById('lp-pgto')?.value||'PIX';
     const valor=parseFloat(document.getElementById('lp-valor')?.value)||0;
+    const recebStatus=document.querySelector('input[name="lp-receb"]:checked')?.value||'pago';
+    const jaPago=(recebStatus==='pago');
     if(valor<=0){toast('Informe um valor de venda válido!','err');return;}
-    S.vendas.push({id:S.nextId++,produto:p.produto,qtd,canal,tipo,valor,cliente,pgto,data,origemPrecificacaoId:p.id});
+    S.vendas.push({
+      id:S.nextId++, produto:p.produto, qtd, canal, tipo, valor,
+      cliente, pgto, data, origemPrecificacaoId:p.id,
+      recebido:jaPago,          // false = pendente de recebimento
+      data_recebimento:jaPago?data:null,
+    });
+    // Desconta estoque ao registrar a venda
     const est=S.estoque.find(e=>e.produto.toLowerCase()===p.produto.toLowerCase());
     if(est) est.qtd=Math.max(0,est.qtd-qtd);
-    msg+=` Venda registrada: ${fmt(valor)}.`;
+    msg+=jaPago
+      ? ` Venda registrada: ${fmt(valor)} ✅ recebido.`
+      : ` Venda registrada: ${fmt(valor)} ⏳ aguardando recebimento.`;
   }
 
   save();
