@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1a1a" media="(prefers-color-scheme: dark)">
+<title>Painel financeiro · Honey Prints 3D</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23185FA5'/><rect x='22' y='52' width='12' height='26' rx='3' fill='white'/><rect x='44' y='36' width='12' height='42' rx='3' fill='white'/><rect x='66' y='22' width='12' height='56' rx='3' fill='white'/></svg>">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+:root{
+  --accent:#185FA5;--accent-bg:#E6F1FB;--accent-text:#0C447C;
+  --success:#0F6E56;--success-bg:#E1F5EE;--danger:#A32D2D;--danger-bg:#FCEBEB;
+  --warning:#854F0B;--warning-bg:#FAEEDA;
+  --bg:#F5F5F3;--surface:#FFFFFF;--surface2:#F9F9F7;
+  --text:#1A1A18;--text2:#5F5E5A;--text3:#888780;
+  --border:#E0DED8;--border2:#C8C6C0;
+  --radius:8px;--radius-lg:14px;
+  /* gráficos */
+  --grid:#e1e0d9;--axis:#c3c2b7;--track:#ECEAE4;--hover:rgba(11,11,11,.04);
+  --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;
+  --st-good:#0ca30c;--st-warn:#fab219;--st-crit:#d03b3b;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#141413;--surface:#1E1E1C;--surface2:#252523;
+    --text:#F0EEE8;--text2:#B4B2A9;--text3:#888780;
+    --border:#2C2C2A;--border2:#3C3C3A;
+    --accent-bg:#0C2A45;--accent-text:#85B7EB;
+    --success:#5DCAA5;--success-bg:#04201A;--danger:#F09595;--danger-bg:#250D0D;--warning:#FAC775;--warning-bg:#1A1008;
+    --grid:#2c2c2a;--axis:#383835;--track:#2C2C2A;--hover:rgba(255,255,255,.05);
+    --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:14px;color:var(--text);background:var(--bg);line-height:1.45}
+a{color:var(--accent-text)}
+.topbar{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--border)}
+.topbar-in{max-width:1200px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.brand{display:flex;align-items:center;gap:10px;margin-right:auto;min-width:0}
+.brand-icon{width:34px;height:34px;border-radius:10px;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.brand-name{font-size:15px;font-weight:600;letter-spacing:-.3px}
+.brand-sub{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border2);border-radius:var(--radius);background:var(--surface);color:var(--text);font:inherit;font-size:13px;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn:hover{background:var(--surface2)}
+.btn i{font-size:16px}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-text)}
+.btn-sm{padding:4px 9px;font-size:12px}
+.btn-ghost{border-color:transparent;background:transparent}
+.drive-ok i{color:var(--success)} .drive-erro i{color:var(--danger)} .drive-sinc i{color:var(--accent-text)}
+select,input{font:inherit;font-size:13px;color:var(--text);background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:7px 10px}
+input[type=checkbox]{padding:0;width:16px;height:16px;accent-color:var(--accent)}
+.wrap{max-width:1200px;margin:0 auto;padding:16px 16px 40px;display:flex;flex-direction:column;gap:14px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;min-width:0}
+.card-h{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.sec-title{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:600}
+.sec-title i{font-size:20px;color:var(--accent-text)}
+.sec-title.sm{font-size:13px;margin:16px 0 8px}
+.sec-desc{font-size:12.5px;color:var(--text2);margin-top:4px;max-width:760px}
+.grid{display:grid;gap:14px}
+.g-hero{grid-template-columns:minmax(0,340px) minmax(0,1fr)}
+.g-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:860px){.g-hero,.g-2{grid-template-columns:minmax(0,1fr)}}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.tile{background:var(--surface2);border-radius:var(--radius);padding:12px 14px;min-width:0}
+.tile-label{font-size:12px;color:var(--text2)}
+.tile-value{font-size:22px;font-weight:600;margin-top:4px;letter-spacing:-.3px}
+.tile-sub{font-size:12px;color:var(--text3);margin-top:4px}
+.pos{color:var(--success)} .neg{color:var(--danger)}
+.hero-num{font-size:44px;font-weight:600;letter-spacing:-1px;line-height:1.1}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.badge i{font-size:13px}
+.b-crit{background:var(--danger-bg);color:var(--danger)}
+.b-warn{background:var(--warning-bg);color:var(--warning)}
+.b-ok{background:var(--success-bg);color:var(--success)}
+.b-info{background:var(--accent-bg);color:var(--accent-text)}
+.b-neutro{background:var(--surface2);color:var(--text2);border:1px solid var(--border)}
+.alerts{display:flex;flex-direction:column;gap:8px}
+.alert{display:flex;gap:10px;padding:12px;border-radius:var(--radius);border:1px solid var(--border)}
+.alert-ic{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px}
+.alert-body{min-width:0;flex:1}
+.alert-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.alert-t{font-weight:600;font-size:13.5px}
+.alert-d{font-size:12.5px;color:var(--text2);margin-top:3px}
+.link{background:none;border:none;color:var(--accent-text);font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;padding:0;margin-top:6px;display:inline-flex;align-items:center;gap:4px}
+.link:hover{text-decoration:underline}
+.vazio{font-size:13px;color:var(--text3);padding:6px 0}
+.nav-chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:12.5px;text-decoration:none}
+.chip:hover{border-color:var(--border2);color:var(--text)}
+.chip i{font-size:15px}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table.t{width:100%;border-collapse:collapse;font-size:13px}
+table.t th{text-align:left;font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;padding:7px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
+table.t td{padding:7px 8px;border-bottom:1px solid var(--border);vertical-align:middle}
+table.t tr:last-child td{border-bottom:none}
+table.t .num,table.t th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+table.t tr.tot td{font-weight:600;border-top:1px solid var(--border2)}
+.prod{max-width:340px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dre-nota{color:var(--text3);font-size:12px}
+.meter{height:8px;border-radius:999px;background:var(--track);overflow:hidden;position:relative}
+.meter>span{display:block;height:100%;border-radius:999px}
+.share{display:flex;align-items:center;gap:8px}
+.share .meter{flex:1;min-width:50px}
+.score-rows{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.score-row{display:grid;grid-template-columns:118px minmax(0,1fr) 62px;align-items:center;gap:10px;font-size:12.5px;color:var(--text2)}
+.score-row .num{text-align:right;font-variant-numeric:tabular-nums;color:var(--text)}
+.gauge{width:100%;max-width:260px;display:block;margin:0 auto}
+.g-num{font-size:40px;font-weight:600;fill:var(--text)}
+.g-sub{font-size:12px;fill:var(--text3)}
+.g-label{text-align:center;margin:2px 0 12px}
+.hint{font-size:11.5px;color:var(--text3);margin-top:10px}
+.pe-bar{position:relative;height:18px;border-radius:999px;background:var(--track);margin:34px 0 26px}
+.pe-fill{position:absolute;left:0;top:0;bottom:0;border-radius:999px;background:var(--s1)}
+.pe-proj{position:absolute;top:0;bottom:0;border-radius:0 999px 999px 0;background:var(--s1);opacity:.3}
+.pe-mark{position:absolute;top:-8px;bottom:-8px;width:2px;background:var(--text);transform:translateX(-1px)}
+.pe-mark span{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font-size:11.5px;font-weight:600;white-space:nowrap;margin-bottom:3px}
+.pe-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--text2)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--text2);margin-bottom:8px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{display:inline-block;width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.sw-line{display:inline-block;width:16px;height:0;border-top:2px dashed var(--text2)}
+.chart{position:relative;width:100%}
+.chart svg{display:block;overflow:visible}
+.ax{font-size:11px;fill:var(--text3);font-variant-numeric:tabular-nums}
+.ax-ref{font-size:11px;fill:var(--text2);font-weight:600}
+.chart .hit{outline:none;cursor:default}
+.tip{position:absolute;pointer-events:none;background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;font-size:12px;box-shadow:0 6px 18px rgba(0,0,0,.14);z-index:5;display:none;min-width:150px;max-width:260px}
+.tip b{display:block;margin-bottom:4px;font-size:12px}
+.tip-row{display:flex;align-items:center;gap:6px;color:var(--text2);margin-top:2px}
+.tip-row span{margin-left:auto;padding-left:10px;color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}
+.tip-ev{color:var(--text3);font-size:11.5px;margin-top:3px;white-space:normal}
+details.tv{margin-top:8px}
+details.tv summary,details.mais summary{font-size:12.5px;color:var(--accent-text);cursor:pointer;width:max-content}
+details.tv[open] summary,details.mais[open] summary{margin-bottom:8px}
+.stack{display:flex;height:22px;border-radius:6px;overflow:hidden;gap:2px;margin:6px 0 10px}
+.stack>div{min-width:2px}
+.stack-leg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px 14px;font-size:12.5px;color:var(--text2)}
+.stack-leg div{display:flex;align-items:center;gap:6px}
+.stack-leg b{margin-left:auto;color:var(--text);font-variant-numeric:tabular-nums}
+.imp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
+.imp{border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.imp-h{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:10px}
+.imp-n{font-weight:600}
+.kv{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--text2);margin-top:6px}
+.kv b{color:var(--text);font-weight:600;text-align:right}
+.empty{text-align:center;padding:30px 16px}
+.empty i.big{font-size:40px;color:var(--text3)}
+.empty h2{font-size:18px;margin:10px 0 6px}
+.empty p{font-size:13px;color:var(--text2);max-width:520px;margin:0 auto 16px}
+.empty .acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.footer{font-size:11.5px;color:var(--text3);text-align:center;padding:4px 16px 0}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:9px 16px;border-radius:999px;font-size:13px;z-index:60;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px)}
+.toast.on{opacity:1}
+dialog{margin:auto;border:1px solid var(--border2);border-radius:var(--radius-lg);background:var(--surface);color:var(--text);padding:0;width:min(760px,calc(100% - 24px));max-height:calc(100vh - 32px)}
+dialog::backdrop{background:rgba(0,0,0,.45)}
+.dlg-h{position:sticky;top:0;background:var(--surface);display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border);z-index:2}
+.dlg-b{padding:16px 18px 20px}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:end}
+.fg{display:flex;flex-direction:column;gap:4px;min-width:0}
+.fg label{font-size:12px;color:var(--text2)}
+.fg input,.fg select{width:100%}
+.fg-check{flex-direction:row;align-items:center;gap:8px;font-size:12.5px;color:var(--text2)}
+.fg input[type=checkbox]{width:16px;flex-shrink:0}
+.err{font-size:12px;color:var(--danger);margin-top:6px}
+.sug{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px dashed var(--border2);border-radius:var(--radius);margin-bottom:6px;flex-wrap:wrap}
+.sug-t{flex:1;min-width:160px;font-size:13px}
+.sug-t small{display:block;color:var(--text3);font-size:11.5px}
+@media(max-width:600px){
+  .brand-sub{display:none}
+  .topbar .lbl{display:none}
+  .hero-num{font-size:36px}
+  .score-row{grid-template-columns:96px minmax(0,1fr) 54px}
+  .dre-nota{display:none}
+}
+@media print{.topbar,.nav-chips,.link,details summary{display:none}.card{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <div class="brand-icon"><i class="ti ti-chart-histogram" aria-hidden="true"></i></div>
+      <div style="min-width:0">
+        <div class="brand-name">Painel financeiro</div>
+        <div class="brand-sub" id="fonte-txt">Honey Prints 3D</div>
+      </div>
+    </div>
+    <label for="sel-mes" class="lbl" style="font-size:12px;color:var(--text3)">Mês</label>
+    <select id="sel-mes" aria-label="Mês de referência"></select>
+    <button class="btn" data-acao="fixos" title="Custos fixos, salários e saldo em caixa"><i class="ti ti-adjustments" aria-hidden="true"></i><span class="lbl">Custos fixos</span></button>
+    <button class="btn" id="btn-drive" data-acao="drive" title="Buscar os dados mais novos no Google Drive"><i class="ti ti-cloud" aria-hidden="true"></i><span class="lbl">Drive</span></button>
+    <button class="btn" data-acao="importar" title="Abrir um backup .json do CRM"><i class="ti ti-upload" aria-hidden="true"></i><span class="lbl">Backup</span></button>
+    <a class="btn" href="index.html" title="Voltar ao CRM"><i class="ti ti-arrow-back-up" aria-hidden="true"></i><span class="lbl">CRM</span></a>
+  </div>
+</header>
+<main class="wrap" id="app"></main>
+<p class="footer">Este painel só lê os dados do CRM: nada aqui altera vendas, saídas ou estoque. Custos fixos e saldo ficam guardados à parte.</p>
+<dialog id="dlg"></dialog>
+<div class="toast" id="toast" role="status"></div>
+<input type="file" id="arquivo" accept=".json,application/json" hidden>
+
+<script>
+'use strict';
+// ══════════════════════════════════════════════
+// ══ CONSTANTES E ESTADO ══
+// ══════════════════════════════════════════════
+const CRM_KEY='p3d_v2', CRM_META='p3d_v2_meta', FIN_KEY='p3d_v2_fin';
+const GDRIVE_CLIENT_ID='667059652451-lpo17irba19url3uf4ulnlh8kb5okqkj.apps.googleusercontent.com';
+const GDRIVE_SCOPE='https://www.googleapis.com/auth/drive.appdata';
+const CRM_FILE='crm_data.json', FIN_FILE='fin_data.json';
+const CATS_FIXOS=['Pró-labore','Salários','Encargos e benefícios','Impostos (DAS/MEI)','Aluguel e condomínio','Energia e água','Internet e telefone','Softwares e assinaturas','Marketing','Contador','Outros'];
+const CATS_FOLHA=['Pró-labore','Salários','Encargos e benefícios'];
+// Saídas cujo valor já está dentro do custo de cada peça (filamento, embalagem, manutenção)
+const CATS_SAIDA_NA_PECA=['Insumo / Filamento','Embalagem','Equipamento / Manutenção'];
+const DIAS_PARADO=60;
+const NIVEL={
+  crit:{cls:'b-crit',icon:'ti-alert-octagon',rot:'Crítico',cor:'var(--st-crit)'},
+  warn:{cls:'b-warn',icon:'ti-alert-triangle',rot:'Atenção',cor:'var(--st-warn)'},
+  ok:{cls:'b-ok',icon:'ti-circle-check',rot:'Bom',cor:'var(--st-good)'},
+  info:{cls:'b-info',icon:'ti-info-circle',rot:'Dados',cor:'var(--s1)'}
+};
+
+const HOJE=(()=>{const d=new Date();d.setHours(0,0,0,0);return d;})();
+let D=null;                                   // dados do CRM (somente leitura)
+let fonte={tipo:null,quando:null,nome:''};
+let F=carregarFin();                          // custos fixos, saldo e metas (do painel)
+let mesRef=null;
+let M=null;                                   // último cálculo
+let GRAF={}, grafSeq=0;
+
+// ══════════════════════════════════════════════
+// ══ UTILITÁRIOS ══
+// ══════════════════════════════════════════════
+function norm(s){return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toUpperCase().replace(/\s+/g,' ').trim();}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function dt(s){
+  const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||''); if(!m) return null;
+  const y=+m[1]; if(y<2000||y>2100) return null;
+  const d=new Date(y,+m[2]-1,+m[3]); return isNaN(d)?null:d;
+}
+function ymOf(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+function ymAdd(ym,n){const [y,m]=ym.split('-').map(Number);return ymOf(new Date(y,m-1+n,1));}
+function ymInicio(ym){const [y,m]=ym.split('-').map(Number);return new Date(y,m-1,1);}
+function ymFim(ym){const [y,m]=ym.split('-').map(Number);return new Date(y,m,0);}
+function diasNoMes(ym){return ymFim(ym).getDate();}
+function addDias(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x;}
+function diffDias(a,b){return Math.round((a-b)/864e5);}
+const MESES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+function nomeMes(ym,longo){
+  const [y,m]=ym.split('-').map(Number);
+  return longo?new Date(y,m-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'}):MESES[m-1]+'/'+String(y).slice(2);
+}
+function brl(n){const v=Math.round((n||0)*100)/100;return (v<0?'−':'')+'R$ '+Math.abs(v).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function brl0(n){const v=Math.round(n||0);return (v<0?'−':'')+'R$ '+Math.abs(v).toLocaleString('pt-BR');}
+function brlK(n){const a=Math.abs(n);if(a>=1000)return (n<0?'−':'')+'R$ '+(a/1000).toLocaleString('pt-BR',{maximumFractionDigits:1})+' mil';return brl0(n);}
+function pct(x,d=0){return x==null||!isFinite(x)?'—':(x*100).toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d})+'%';}
+function dataBR(d){return d?d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'}):'—';}
+function diaMes(d){return d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});}
+function clamp(x,a=0,b=1){return Math.max(a,Math.min(b,x));}
+function soma(arr,f){let s=0;for(const x of arr)s+=f?(f(x)||0):(x||0);return s;}
+function num(n,d=0){return (n||0).toLocaleString('pt-BR',{maximumFractionDigits:d});}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('on'),3200);}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+
+// ══════════════════════════════════════════════
+// ══ DADOS: CRM (leitura) E PAINEL (custos fixos) ══
+// ══════════════════════════════════════════════
+function finPadrao(){return {custos:[],ignorados:[],saldo:{valor:null,data:null},metaMargem:30,previsaoVendas:true,updatedAt:null};}
+function carregarFin(){
+  try{const f=JSON.parse(localStorage.getItem(FIN_KEY)||'null');return Object.assign(finPadrao(),f||{});}
+  catch(e){return finPadrao();}
+}
+function salvarFin(){
+  F.updatedAt=new Date().toISOString();
+  try{localStorage.setItem(FIN_KEY,JSON.stringify(F));}catch(e){}
+  driveEnviarFin();
+}
+function normalizarDados(d){
+  const arr=k=>Array.isArray(d[k])?d[k].filter(x=>x&&typeof x==='object'):[];
+  const imps=arr('impressoras');
+  return {
+    vendas:arr('vendas'),saidas:arr('saidas'),producao:arr('producao'),estoque:arr('estoque'),
+    filamentos:arr('filamentos'),patrimonio:arr('patrimonio'),prec:arr('db_precificacao'),
+    impressoras:imps.length?imps:[{id:1,marca:'Bambu Lab A1',valor:5500,meses_retorno:10,hrs_dia:20,dias_mes:25}]
+  };
+}
+function usarDados(d,f){D=normalizarDados(d);fonte=f;render();}
+function carregarLocal(){
+  try{
+    const raw=localStorage.getItem(CRM_KEY); if(!raw) return false;
+    const d=JSON.parse(raw); if(!Array.isArray(d.vendas)) return false;
+    let quando=null; try{quando=JSON.parse(localStorage.getItem(CRM_META)||'{}').updatedAt||null;}catch(e){}
+    usarDados(d,{tipo:'local',quando,nome:'este navegador'});
+    return true;
+  }catch(e){console.warn('Erro ao ler dados do CRM:',e);return false;}
+}
+
+// ══════════════════════════════════════════════
+// ══ CÁLCULOS ══
+// ══════════════════════════════════════════════
+function custosUn(p){
+  const n=k=>+p[k]||0;
+  const c={material:n('custo_material'),energia:n('custo_energia'),manut:n('custo_manutencao'),retorno:n('custo_roi'),
+    falhas:n('custo_falhas'),dep:n('custo_dep'),hora:n('custo_hora_op'),adic:n('custo_adicional')};
+  c.partes=c.material+c.energia+c.manut+c.retorno+c.falhas+c.dep+c.hora+c.adic;
+  c.total=n('custo_total')||c.partes;
+  return c;
+}
+// Taxa de marketplace da precificação, em % do preço (o CRM guarda o valor em R$)
+function taxaPctDe(p){
+  const fa=+p.fin_atacado||0,fv=+p.fin_varejo||0,ta=+p.taxa_mkt_a||0,tv=+p.taxa_mkt_v||0;
+  if(fa>0&&ta>0) return ta/fa;
+  if(fv>0&&tv>0) return tv/fv;
+  return 0;
+}
+function custoFixoMes(ym,filtro){
+  return soma(F.custos.filter(c=>c.ativo!==false&&(!c.inicio||c.inicio<=ym)&&(!c.fim||c.fim>=ym)&&(!filtro||filtro(c))),c=>+c.valor);
+}
+const ehFolha=c=>CATS_FOLHA.includes(c.cat);
+// Custo da peça na visão da empresa: se há salário/pró-labore cadastrado, a hora do operador
+// já é paga por eles e sai do custo da peça (senão contaria duas vezes).
+function custoPecaEmpresa(v,semHora){
+  if(v.conhecido) return v.custo-(semHora?v.hora:0);
+  return v.valor*(M.razao.custo-(semHora?M.razao.hora:0));
+}
+function dreMes(ym){
+  const vs=M.vendas.filter(v=>v.ym===ym);
+  const receita=soma(vs,v=>v.valor);
+  const folha=custoFixoMes(ym,ehFolha), semHora=folha>0;
+  const custoPecas=soma(vs,v=>custoPecaEmpresa(v,semHora));
+  const receitaEst=soma(vs.filter(v=>!v.conhecido),v=>v.valor);
+  const mc=receita-custoPecas, fixos=custoFixoMes(ym);
+  const avulsasLista=M.saidas.filter(s=>s.ym===ym&&!CATS_SAIDA_NA_PECA.includes(s.cat)&&!M.vinculos.has(s.chave));
+  const avulsas=soma(avulsasLista,s=>s.valor);
+  return {ym,receita,n:vs.length,custoPecas,receitaEst,mc,mcPct:receita>0?mc/receita:null,fixos,folha,semHora,avulsas,avulsasLista,resultado:mc-fixos-avulsas};
+}
+
+function calcular(){
+  M={invalidas:[]};
+  M.mesAtual=ymOf(HOJE); M.ref=mesRef; M.emAndamento=mesRef===M.mesAtual;
+
+  // ── precificação: por id (origemPrecificacaoId) e pelo nome do produto
+  const precId=new Map(), precNome=new Map();
+  for(const p of D.prec){
+    precId.set(String(p.id),p);
+    const k=norm(p.produto), a=precNome.get(k);
+    if(!a||String(p.data||'')>=String(a.data||'')) precNome.set(k,p);
+  }
+  M.precDe=r=>(r.origemPrecificacaoId!=null&&precId.get(String(r.origemPrecificacaoId)))||precNome.get(norm(r.produto))||null;
+
+  // ── vendas com custo econômico
+  M.vendas=[];
+  for(const v of D.vendas){
+    const d=dt(v.data);
+    if(!d){M.invalidas.push(`Venda "${v.produto||'?'}" com data "${v.data||'vazia'}"`);continue;}
+    const qtd=+v.qtd||1, valor=+v.valor||0, p=M.precDe(v);
+    const o={produto:v.produto||'Sem nome',chave:norm(v.produto),cliente:String(v.cliente||'').trim(),canal:v.canal||'—',tipo:v.tipo||'—',
+      d,ym:ymOf(d),qtd,valor,conhecido:!!p,recebido:v.recebido!==false,dReceb:dt(v.data_recebimento)||d};
+    if(p){
+      const c=custosUn(p), taxa=valor*taxaPctDe(p);
+      o.comp=c.partes>0
+        ?{fil:(c.material+c.falhas)*qtd,maq:(c.energia+c.manut+c.retorno+c.dep)*qtd,mao:c.hora*qtd,emb:c.adic*qtd+taxa}
+        :{fil:c.total*qtd,maq:0,mao:0,emb:taxa};
+      o.custo=o.comp.fil+o.comp.maq+o.comp.mao+o.comp.emb;
+      o.hora=c.hora*qtd; o.capital=(c.retorno+c.dep)*qtd; o.lucro=valor-o.custo;
+      o.impId=+p.impressora_id||1;
+      o.precoRef=(o.tipo==='Varejo'?+p.fin_varejo:+p.fin_atacado)||0;
+    }
+    M.vendas.push(o);
+  }
+  const conh=M.vendas.filter(v=>v.conhecido), recC=soma(conh,v=>v.valor);
+  // proporção de custo das vendas conhecidas, usada para estimar as vendas sem precificação
+  M.razao=recC>0?{custo:soma(conh,v=>v.custo)/recC,hora:soma(conh,v=>v.hora)/recC}:{custo:0.6,hora:0};
+
+  // ── saídas
+  M.saidas=[];
+  for(const s of D.saidas){
+    const dd=dt(s.data), dv=dt(s.venc||s.vencimento)||dd;
+    if(s.data&&!dd) M.invalidas.push(`Saída "${s.desc||'?'}" com data "${s.data}"`);
+    if(!dv) continue;
+    const pg=dt(s.data_pgto)||(dv<=HOJE?dv:(dd&&dd<=HOJE?dd:HOJE));
+    M.saidas.push({desc:s.desc||'Sem descrição',chave:norm(s.desc),cat:s.cat||'Outro',valor:+s.valor||0,pago:!!s.pago,dVenc:dv,dPgto:pg,ym:ymOf(dv)});
+  }
+  M.vinculos=new Set(F.custos.filter(c=>c.ativo!==false&&c.vinculo).map(c=>c.vinculo));
+
+  // ── patrimônio (parcelado em meses quando tiver parcelas)
+  M.parcelas=[]; M.patrimonioTotal=0;
+  for(const p of D.patrimonio){
+    const d=dt(p.data), tot=+p.valor_total||((+p.valor_unit||0)*(+p.qtd||1));
+    M.patrimonioTotal+=tot; if(!d) continue;
+    const n=Math.max(1,+p.parcelas||1);
+    if(n===1) M.parcelas.push({d,valor:tot,item:p.item||'Patrimônio'});
+    else for(let i=1;i<=n;i++) M.parcelas.push({d:new Date(d.getFullYear(),d.getMonth()+i,Math.min(d.getDate(),28)),valor:tot/n,item:`${p.item||'Patrimônio'} (${i}/${n})`});
+  }
+
+  // ── produção (horas por impressora, uso de filamento)
+  M.producao=[];
+  for(const p of D.producao){
+    const d=dt(p.data); if(!d) continue;
+    const pr=M.precDe(p);
+    const fils=(Array.isArray(p.filamentos)?p.filamentos.map(f=>+f.filamento_id):[]).concat(+p.filamento_id||[]).filter(Boolean);
+    M.producao.push({d,chave:norm(p.produto),horas:(+p.tempo||0)*(+p.qtd||1),impId:pr?(+pr.impressora_id||1):1,fils});
+  }
+
+  // ── janela de análise: 3 meses até o mês de referência
+  const fimRef=M.emAndamento?HOJE:ymFim(mesRef);
+  M.janela={ini:ymInicio(ymAdd(mesRef,-2)),fim:fimRef,rot:`${nomeMes(ymAdd(mesRef,-2))} a ${nomeMes(mesRef)}`};
+  M.vendasJ=M.vendas.filter(v=>v.d>=M.janela.ini&&v.d<=M.janela.fim);
+  M.recJ=soma(M.vendasJ,v=>v.valor);
+  const conhJ=M.vendasJ.filter(v=>v.conhecido);
+  M.recConhJ=soma(conhJ,v=>v.valor);
+  M.margemEcon=M.recConhJ>0?soma(conhJ,v=>v.lucro)/M.recConhJ:null;
+
+  // ── resultado do mês e ponto de equilíbrio
+  M.dre=dreMes(mesRef);
+  M.fixos=custoFixoMes(mesRef);
+  M.folha=custoFixoMes(mesRef,ehFolha);
+  const semHora=M.folha>0;
+  M.mcPct=M.recJ>0?(M.recJ-soma(M.vendasJ,v=>custoPecaEmpresa(v,semHora)))/M.recJ:null;
+  M.pe=M.fixos>0&&M.mcPct>0?M.fixos/M.mcPct:null;
+  const dia=HOJE.getDate(), dm=diasNoMes(mesRef);
+  M.projMes=M.emAndamento?M.dre.receita*dm/dia:(mesRef<M.mesAtual?M.dre.receita:0);
+  M.ticket=M.dre.n?M.dre.receita/M.dre.n:(M.vendasJ.length?M.recJ/M.vendasJ.length:0);
+  M.diaPE=null;
+  if(M.pe){
+    let acc=0;
+    for(const v of M.vendas.filter(v=>v.ym===mesRef).sort((a,b)=>a.d-b.d)){acc+=v.valor;if(acc>=M.pe){M.diaPE=v.d;break;}}
+  }
+  M.receitaMedia3m=M.recJ/3;
+
+  // ── dados atualizados? (data da última gravação do CRM, ou o registro mais recente)
+  let ult=null;
+  for(const d of [...M.vendas.map(v=>v.d),...M.producao.map(p=>p.d)]) if(d<=HOJE&&(!ult||d>ult)) ult=d;
+  const q=fonte.quando?new Date(fonte.quando):null;
+  M.atualizadoEm=q&&!isNaN(q)?q:ult;
+  M.diasSemAtualizar=M.atualizadoEm?diffDias(HOJE,new Date(M.atualizadoEm.getFullYear(),M.atualizadoEm.getMonth(),M.atualizadoEm.getDate())):null;
+  M.desatualizado=M.diasSemAtualizar!=null&&M.diasSemAtualizar>3;
+
+  M.caixa=calcCaixa();
+  M.produtos=calcProdutos();
+  M.clientes=calcClientes();
+  M.tend=calcTendencia();
+  M.capital=calcCapital();
+  M.imps=calcImpressoras();
+  M.score=calcScore();
+  M.alertas=calcAlertas();
+  return M;
+}
+
+function calcCaixa(){
+  const C={};
+  const entradasEm=(a,b)=>soma(M.vendas.filter(v=>v.recebido&&v.dReceb>a&&v.dReceb<=b),v=>v.valor);
+  const saidasEm=(a,b)=>soma(M.saidas.filter(s=>s.pago&&s.dPgto>a&&s.dPgto<=b),s=>s.valor);
+  const sd=dt(F.saldo&&F.saldo.data);
+  C.temSaldo=!!(F.saldo&&F.saldo.valor!==null&&F.saldo.valor!==''&&isFinite(+F.saldo.valor)&&sd);
+  C.saldoHoje=C.temSaldo?(+F.saldo.valor+entradasEm(sd,HOJE)-saidasEm(sd,HOJE)):0;
+  C.mediaDiaria=entradasEm(addDias(HOJE,-90),HOJE)/90;
+  const fim=addDias(HOJE,90), ev=[];
+  C.aReceber=M.vendas.filter(v=>!v.recebido);
+  C.aReceberTotal=soma(C.aReceber,v=>v.valor);
+  for(const v of C.aReceber) ev.push({d:HOJE,valor:v.valor,desc:'A receber: '+v.produto});
+  C.aPagar=M.saidas.filter(s=>!s.pago);
+  C.vencidas=C.aPagar.filter(s=>s.dVenc<HOJE).sort((a,b)=>a.dVenc-b.dVenc);
+  C.vencidasTotal=soma(C.vencidas,s=>s.valor);
+  for(const s of C.aPagar){const d=s.dVenc<HOJE?HOJE:s.dVenc;if(d<=fim) ev.push({d,valor:-s.valor,desc:s.desc});}
+  // custos fixos que não estão lançados como Saídas naquele mês
+  for(const c of F.custos){
+    if(c.ativo===false) continue;
+    for(let i=0;i<=3;i++){
+      const ym=ymAdd(M.mesAtual,i);
+      if((c.inicio&&c.inicio>ym)||(c.fim&&c.fim<ym)) continue;
+      const [y,m]=ym.split('-').map(Number);
+      const d=new Date(y,m-1,Math.min(+c.dia||10,diasNoMes(ym)));
+      if(d<HOJE||d>fim) continue;
+      if(c.vinculo&&M.saidas.some(s=>s.chave===c.vinculo&&s.ym===ym)) continue;
+      ev.push({d,valor:-(+c.valor||0),desc:c.desc+' (custo fixo)'});
+    }
+  }
+  for(const p of M.parcelas) if(p.d>HOJE&&p.d<=fim) ev.push({d:p.d,valor:-p.valor,desc:p.item});
+  C.eventos=ev;
+  const porDia=new Map();
+  for(const e of ev){const k=diffDias(e.d,HOJE);if(!porDia.has(k))porDia.set(k,[]);porDia.get(k).push(e);}
+  C.pontos=[]; C.min=null; C.primeiroNeg=null;
+  let saldo=C.saldoHoje;
+  for(let i=0;i<=90;i++){
+    const es=porDia.get(i)||[];
+    for(const e of es) saldo+=e.valor;
+    if(i>0&&F.previsaoVendas!==false) saldo+=C.mediaDiaria;
+    const d=addDias(HOJE,i);
+    C.pontos.push({d,y:saldo,ev:es});
+    if(!C.min||saldo<C.min.y) C.min={y:saldo,d,i};
+    if(saldo<-0.5&&!C.primeiroNeg) C.primeiroNeg=d;
+  }
+  C.em30=C.pontos[30].y;
+  C.variacao90=C.pontos[90].y-C.saldoHoje;
+  C.aPagar30=C.aPagar.filter(s=>s.dVenc>=HOJE&&s.dVenc<=addDias(HOJE,30)).sort((a,b)=>a.dVenc-b.dVenc);
+  // realizado por mês
+  const yms=[...M.vendas.map(v=>v.ym),...M.saidas.filter(s=>s.pago).map(s=>ymOf(s.dPgto))].filter(y=>y<=mesRef).sort();
+  C.mensal=[];
+  if(yms.length){
+    let ym=yms[0]; if(ym<ymAdd(mesRef,-11)) ym=ymAdd(mesRef,-11);
+    for(;ym<=mesRef;ym=ymAdd(ym,1)){
+      C.mensal.push({ym,
+        ent:soma(M.vendas.filter(v=>v.recebido&&ymOf(v.dReceb)===ym),v=>v.valor),
+        sai:soma(M.saidas.filter(s=>s.pago&&ymOf(s.dPgto)===ym),s=>s.valor)});
+    }
+  }
+  return C;
+}
+
+function calcProdutos(){
+  const mp=new Map();
+  for(const v of M.vendasJ){
+    let p=mp.get(v.chave);
+    if(!p){p={chave:v.chave,nome:v.produto,un:0,receita:0,custo:0,lucro:0,conhecido:true,vendas:0,desconto:0,nDesc:0};mp.set(v.chave,p);}
+    p.un+=v.qtd; p.receita+=v.valor; p.vendas++;
+    if(v.conhecido){
+      p.custo+=v.custo; p.lucro+=v.lucro;
+      if(v.precoRef>0){const u=v.valor/v.qtd;if(u<v.precoRef-0.009){p.desconto+=(v.precoRef-u)*v.qtd;p.nDesc++;}}
+    }else p.conhecido=false;
+  }
+  const lista=[...mp.values()];
+  for(const p of lista){
+    if(!p.conhecido){p.custo=p.receita*M.razao.custo;p.lucro=p.receita-p.custo;}
+    p.precoUn=p.receita/p.un; p.custoUn=p.custo/p.un; p.lucroUn=p.lucro/p.un;
+    p.margem=p.receita>0?p.lucro/p.receita:null;
+  }
+  // curva ABC por faturamento
+  const porRec=[...lista].sort((a,b)=>b.receita-a.receita), tot=soma(porRec,p=>p.receita);
+  let acc=0;
+  for(const p of porRec){const ini=acc;acc+=p.receita;p.acum=tot?acc/tot:0;p.classe=tot&&ini/tot<0.8?'A':(tot&&ini/tot<0.95?'B':'C');}
+  // composição do custo de cada R$ vendido
+  const comp={fil:0,maq:0,mao:0,emb:0}; let recConh=0;
+  for(const v of M.vendasJ) if(v.conhecido){recConh+=v.valor;for(const k in comp) comp[k]+=v.comp[k];}
+  return {lista,porRec,porLucro:[...lista].sort((a,b)=>b.lucro-a.lucro),total:tot,comp,recConh,
+    descontoTotal:soma(lista,p=>p.desconto),nDesc:soma(lista,p=>p.nDesc),
+    semCusto:lista.filter(p=>!p.conhecido),receitaSemCusto:soma(lista.filter(p=>!p.conhecido),p=>p.receita)};
+}
+
+function calcClientes(){
+  const mp=new Map();
+  for(const v of M.vendasJ){
+    const k=norm(v.cliente)||'(SEM NOME)';
+    let c=mp.get(k);
+    if(!c){c={nome:v.cliente||'Sem nome',receita:0,n:0,ult:v.d};mp.set(k,c);}
+    c.receita+=v.valor; c.n++; if(v.d>c.ult) c.ult=v.d;
+  }
+  const lista=[...mp.values()].sort((a,b)=>b.receita-a.receita), tot=soma(lista,c=>c.receita);
+  let acc=0;
+  for(const c of lista){const ini=acc;acc+=c.receita;c.share=tot?c.receita/tot:0;c.classe=tot&&ini/tot<0.8?'A':(tot&&ini/tot<0.95?'B':'C');}
+  const contar=campo=>{const m=new Map();for(const v of M.vendasJ)m.set(v[campo],(m.get(v[campo])||0)+v.valor);return [...m.entries()].sort((a,b)=>b[1]-a[1]);};
+  return {lista,total:tot,canais:contar('canal'),tipos:contar('tipo')};
+}
+
+function calcTendencia(){
+  const T={};
+  const yms=M.vendas.map(v=>v.ym).filter(y=>y<=mesRef).sort();
+  T.meses=[];
+  if(yms.length){
+    let ym=yms[0]; if(ym<ymAdd(mesRef,-11)) ym=ymAdd(mesRef,-11);
+    for(;ym<=mesRef;ym=ymAdd(ym,1)){
+      const vs=M.vendas.filter(v=>v.ym===ym), r=soma(vs,v=>v.valor);
+      const proj=ym===M.mesAtual?Math.max(0,r*diasNoMes(ym)/HOJE.getDate()-r):0;
+      T.meses.push({ym,receita:r,n:vs.length,ticket:vs.length?r/vs.length:0,proj});
+    }
+  }
+  const ult=soma(M.vendas.filter(v=>v.d>addDias(HOJE,-30)&&v.d<=HOJE),v=>v.valor);
+  const ant=soma(M.vendas.filter(v=>v.d>addDias(HOJE,-60)&&v.d<=addDias(HOJE,-30)),v=>v.valor);
+  T.ult30=ult; T.ant30=ant; T.var30=ant>0?(ult-ant)/ant:null;
+  const fechados=T.meses.filter(m=>m.ym!==M.mesAtual);
+  T.melhor=fechados.length?fechados.reduce((a,b)=>b.receita>a.receita?b:a):null;
+  return T;
+}
+
+function calcCapital(){
+  const K={};
+  const ultVenda=new Map(), ultProd=new Map();
+  for(const v of M.vendas){const u=ultVenda.get(v.chave);if(!u||v.d>u)ultVenda.set(v.chave,v.d);}
+  for(const p of M.producao){const u=ultProd.get(p.chave);if(!u||p.d>u)ultProd.set(p.chave,p.d);}
+  K.estoque=[];
+  for(const e of D.estoque){
+    const qtd=+e.qtd||0; if(qtd<=0) continue;
+    const chave=norm(e.produto), pr=M.precDe(e);
+    const custoUn=pr?custosUn(pr).total:(+e.preco||0)*M.razao.custo;
+    const ref=ultVenda.get(chave)||ultProd.get(chave)||null;
+    const dias=ref?diffDias(HOJE,ref):null;
+    K.estoque.push({nome:e.produto||'Sem nome',qtd,custo:qtd*custoUn,venda:qtd*(+e.preco||0),dias,vendeu:ultVenda.has(chave),parado:dias===null||dias>=DIAS_PARADO,estimado:!pr});
+  }
+  K.estoque.sort((a,b)=>b.custo-a.custo);
+  const ultUso=new Map();
+  for(const p of M.producao) for(const id of p.fils){const u=ultUso.get(id);if(!u||p.d>u)ultUso.set(id,p.d);}
+  K.fil=[];
+  for(const f of D.filamentos){
+    const rest=+f.peso_restante||0, tot=+f.peso_total||1000; if(rest<=1) continue;
+    const valor=rest/tot*(+f.preco||0), u=ultUso.get(+f.id)||null, dias=u?diffDias(HOJE,u):null;
+    K.fil.push({nome:[f.tipo,f.cor].filter(Boolean).join(' ')+(f.marca?` (${f.marca})`:''),rest,valor,ult:u,dias,parado:dias!==null&&dias>=DIAS_PARADO,nunca:dias===null});
+  }
+  K.fil.sort((a,b)=>b.valor-a.valor);
+  K.estoqueTotal=soma(K.estoque,e=>e.custo);
+  K.estoqueParado=soma(K.estoque.filter(e=>e.parado),e=>e.custo);
+  K.filTotal=soma(K.fil,f=>f.valor);
+  K.filParado=soma(K.fil.filter(f=>f.parado),f=>f.valor);
+  K.filNunca=soma(K.fil.filter(f=>f.nunca),f=>f.valor);
+  K.parado=K.estoqueParado+K.filParado;
+  K.meses=M.receitaMedia3m>0?K.parado/M.receitaMedia3m:null;
+  return K;
+}
+
+function calcImpressoras(){
+  const tokens=s=>new Set(norm(s).replace(/[^A-Z0-9 ]/g,' ').split(' ').filter(t=>t.length>1&&!['IMPRESSORA','COM','DE','DA'].includes(t)));
+  const pats=D.patrimonio.filter(p=>/IMPRESSORA|BAMBU|PRUSA|CREALITY|ELEGOO|ANYCUBIC/.test(norm(p.item)));
+  const usados=new Set();
+  return D.impressoras.map(imp=>{
+    const id=+imp.id, valor=+imp.valor||0, meses=+imp.meses_retorno||10;
+    const hrsDia=+imp.hrs_dia||15, diasMes=+imp.dias_mes||20;
+    // acha a compra no patrimônio pelo nome (ex.: "Bambu Lab A1" x "Impressora Bambu Lab A1")
+    const tk=tokens(imp.marca), ams=tk.has('AMS');
+    let melhor=null, nota=0;
+    for(const p of pats){
+      if(usados.has(p)) continue;
+      const tp=tokens(p.item); let n=0; for(const t of tk) if(tp.has(t)) n++;
+      if(tp.has('AMS')!==ams) n-=2;
+      if(n>nota){nota=n;melhor=p;}
+    }
+    if(melhor&&nota>=2) usados.add(melhor); else melhor=null;
+    const prods=M.producao.filter(p=>p.impId===id);
+    const inicio=(melhor&&dt(melhor.data))||(prods.length?prods.reduce((a,b)=>b.d<a.d?b:a).d:HOJE);
+    const recuperado=soma(M.vendas.filter(v=>v.conhecido&&v.impId===id&&v.d>=inicio),v=>v.capital);
+    const mesesDec=Math.max(0.5,diffDias(HOJE,inicio)/30.44);
+    const ritmo=recuperado/mesesDec, meta=valor/meses;
+    const falta=Math.max(0,valor-recuperado);
+    const eta=ritmo>0?falta/ritmo:null;
+    const horas30=soma(prods.filter(p=>p.d>addDias(HOJE,-30)),p=>p.horas);
+    const cap=hrsDia*diasMes;
+    return {nome:imp.marca||('Impressora '+id),valor,meses,inicio,pago:melhor?(+melhor.valor_total||0):null,recuperado,ritmo,meta,falta,eta,
+      horas30,cap,uso:cap>0?horas30/cap:null,horasTotal:soma(prods,p=>p.horas),hrsDia,diasMes,
+      previsto:Math.min(valor,meta*mesesDec)};
+  });
+}
+
+function calcScore(){
+  const C=M.caixa, comp=[];
+  comp.push({nome:'Equilíbrio',peso:30,s:M.pe?clamp(M.projMes/M.pe):null,dica:M.pe?'faturamento previsto ÷ ponto de equilíbrio':'cadastre os custos fixos'});
+  comp.push({nome:'Caixa',peso:25,s:C.temSaldo?(C.primeiroNeg?clamp(diffDias(C.primeiroNeg,HOJE)/90):1):null,dica:C.temSaldo?'dias até o caixa ficar negativo (90 = ótimo)':'informe o saldo em caixa'});
+  comp.push({nome:'Margem',peso:20,s:M.margemEcon!=null?clamp(M.margemEcon/((+F.metaMargem||30)/100)):null,dica:`margem econômica ÷ meta de ${+F.metaMargem||30}%`});
+  comp.push({nome:'Contas em dia',peso:15,s:C.vencidasTotal>0?clamp(1-C.vencidasTotal/Math.max(1,M.receitaMedia3m)):1,dica:'contas vencidas ÷ faturamento médio do mês'});
+  comp.push({nome:'Dados completos',peso:10,s:M.recJ>0?M.recConhJ/M.recJ:null,dica:'faturamento com custo conhecido'});
+  const val=comp.filter(c=>c.s!=null), pesos=soma(val,c=>c.peso);
+  const valor=pesos?Math.round(100*soma(val,c=>c.peso*c.s)/pesos):null;
+  return {valor,comp,nivel:valor==null?'info':valor>=75?'ok':valor>=50?'warn':'crit'};
+}
+
+function calcAlertas(){
+  const A=[], C=M.caixa, P=M.produtos, nm=nomeMes(mesRef,true);
+  const add=(nivel,titulo,detalhe,acao)=>A.push({nivel,titulo,detalhe,acao});
+  const ir=(alvo,label='Ver detalhes')=>({tipo:'ir',alvo,label});
+
+  // custos fixos
+  if(!F.custos.filter(c=>c.ativo!==false).length){
+    const sug=sugestoesFixos();
+    add('warn','Cadastre os custos fixos para ver o ponto de equilíbrio',
+      'Pró-labore, salários, DAS, internet, aluguel, assinaturas. Sem eles, o painel não sabe quanto vocês precisam vender por mês.'+
+      (sug.length?` Achei ${sug.length} gasto${sug.length>1?'s':''} que se repete${sug.length>1?'m':''} nas Saídas (${sug.slice(0,3).map(s=>esc(s.desc)).join(', ')}).`:''),
+      {tipo:'fixos',label:'Cadastrar custos fixos'});
+  }
+  // ponto de equilíbrio
+  if(M.pe){
+    if(M.emAndamento){
+      if(M.dre.receita>=M.pe) add('ok',`Equilíbrio de ${nm} atingido${M.diaPE?' no dia '+M.diaPE.getDate():''}`,`Faturamento de ${brl0(M.dre.receita)} contra ${brl0(M.pe)} necessários. Daqui pra frente, a margem vira lucro.`,ir('#mod-equilibrio'));
+      else{
+        const falta=M.pe-M.dre.receita, nv=M.ticket>0?Math.ceil(falta/M.ticket):null;
+        const proj=M.projMes;
+        add(proj<M.pe*0.8?'crit':'warn',`Faltam ${brl0(falta)} para o equilíbrio de ${nm}`,
+          `No ritmo atual o mês fecha em ${brl0(proj)}, ${proj>=M.pe?'acima':'abaixo'} dos ${brl0(M.pe)} necessários.`+(nv?` São cerca de ${nv} venda${nv>1?'s':''} no ticket médio de ${brl0(M.ticket)}.`:''),ir('#mod-equilibrio'));
+      }
+    }else if(M.dre.receita>0||M.fixos>0){
+      if(M.dre.resultado<0) add('crit',`${nm[0].toUpperCase()+nm.slice(1)} fechou com prejuízo econômico de ${brl0(-M.dre.resultado)}`,`Faturou ${brl0(M.dre.receita)} e o equilíbrio era ${brl0(M.pe)}.`,ir('#mod-equilibrio'));
+      else add('ok',`${nm[0].toUpperCase()+nm.slice(1)} fechou com lucro econômico de ${brl0(M.dre.resultado)}`,`Faturou ${brl0(M.dre.receita)}, acima do equilíbrio de ${brl0(M.pe)}.`,ir('#mod-equilibrio'));
+    }
+  }
+  // contas vencidas
+  if(C.vencidas.length){
+    add('crit',`${C.vencidas.length} conta${C.vencidas.length>1?'s':''} vencida${C.vencidas.length>1?'s':''} e não paga${C.vencidas.length>1?'s':''}: ${brl0(C.vencidasTotal)}`,
+      `A mais antiga venceu em ${dataBR(C.vencidas[0].dVenc)} (${esc(C.vencidas[0].desc)}). Se já foram pagas, marque como pagas em Saídas no CRM, senão o caixa projetado fica errado.`,ir('#mod-caixa'));
+  }
+  // caixa
+  if(C.temSaldo){
+    if(C.primeiroNeg) add('crit',`O caixa fica negativo em ${dataBR(C.primeiroNeg)}`,`A projeção chega a ${brl0(C.min.y)} em ${dataBR(C.min.d)}. Antecipe recebimentos, adie compras ou renegocie vencimentos.`,ir('#mod-caixa'));
+    else add('ok','Caixa positivo nos próximos 90 dias',`O ponto mais baixo é ${brl0(C.min.y)} em ${dataBR(C.min.d)}.`,ir('#mod-caixa'));
+  }else{
+    add('warn','Informe o saldo em caixa de hoje',`Sem ele a projeção mostra só a variação: nos próximos 90 dias ${C.variacao90>=0?'entram':'saem'} ${brl0(Math.abs(C.variacao90))} a mais do que ${C.variacao90>=0?'saem':'entram'}.`,{tipo:'fixos',alvo:'saldo',label:'Informar saldo'});
+  }
+  // produtos
+  const prej=P.lista.filter(p=>p.conhecido&&p.lucro<0).sort((a,b)=>a.lucro-b.lucro);
+  if(prej.length) add('crit',`${prej.length} produto${prej.length>1?'s dão':' dá'} prejuízo econômico`,
+    prej.slice(0,3).map(p=>`${esc(p.nome)} (${brl(p.lucroUn)} por unidade)`).join(', ')+'. Revise o preço ou o custo na Precificação.',ir('#mod-produtos'));
+  const meta=(+F.metaMargem||30)/100;
+  const baixa=P.lista.filter(p=>p.conhecido&&p.lucro>=0&&p.margem!=null&&p.margem<meta).sort((a,b)=>b.receita-a.receita);
+  if(baixa.length) add('warn',`${baixa.length} produto${baixa.length>1?'s':''} abaixo da meta de margem de ${pct(meta)}`,
+    baixa.slice(0,3).map(p=>`${esc(p.nome)}: ${pct(p.margem)}`).join(' · '),ir('#mod-produtos'));
+  if(P.descontoTotal>1) add('warn',`${brl0(P.descontoTotal)} em descontos sobre a Precificação`,`Em ${P.nDesc} venda${P.nDesc>1?'s':''} de ${M.janela.rot} o preço cobrado ficou abaixo do preço final da Precificação.`,ir('#mod-produtos'));
+  // folha
+  if(M.folha>0&&M.receitaMedia3m>0&&M.folha/M.receitaMedia3m>0.5) add('warn',`Salários e pró-labore consomem ${pct(M.folha/M.receitaMedia3m)} do faturamento`,`Folha de ${brl0(M.folha)} por mês contra faturamento médio de ${brl0(M.receitaMedia3m)}.`,ir('#mod-folha'));
+  // tendência
+  const T=M.tend;
+  if(!M.desatualizado&&T.var30!=null&&T.var30<=-0.2) add('warn',`Vendas dos últimos 30 dias caíram ${pct(-T.var30)}`,`${brl0(T.ult30)} contra ${brl0(T.ant30)} nos 30 dias anteriores.`,ir('#mod-vendas'));
+  if(T.var30!=null&&T.var30>=0.15) add('ok',`Vendas dos últimos 30 dias subiram ${pct(T.var30)}`,`${brl0(T.ult30)} contra ${brl0(T.ant30)} nos 30 dias anteriores.`,ir('#mod-vendas'));
+  // pontos fortes
+  const camp=P.porLucro.find(p=>p.conhecido&&p.lucro>0);
+  if(camp) add('ok',`Campeão de lucro: ${esc(camp.nome)}`,`${brl0(camp.lucro)} de lucro econômico em ${M.janela.rot} (${num(camp.un)} un., margem de ${pct(camp.margem)}).`,ir('#mod-abc'));
+  const top=M.clientes.lista[0];
+  if(top&&M.clientes.lista.length>2&&top.share>0.3) add('warn',`${esc(top.nome)} responde por ${pct(top.share)} do faturamento`,'Depender muito de um cliente é risco. Vale buscar outros do mesmo perfil.',ir('#mod-abc'));
+  // capital parado
+  const K=M.capital;
+  if(K.parado>0&&K.meses!=null&&K.meses>=0.5) add('warn',`${brl0(K.parado)} parados há mais de ${DIAS_PARADO} dias`,`Estoque sem venda e bobinas sem uso: equivale a ${num(K.meses,1)} ${K.meses>=2?'meses':'mês'} de faturamento.`,ir('#mod-capital'));
+  // impressoras
+  for(const i of M.imps){
+    if(!M.desatualizado&&i.uso!=null&&i.cap>0&&i.uso<0.3&&i.horasTotal>0) add('warn',`${esc(i.nome)} rodou ${pct(i.uso)} do tempo previsto na Precificação`,
+      `A precificação supõe ${num(i.cap)} h/mês, nos últimos 30 dias foram ${num(i.horas30)} h. Com menos horas, o retorno embutido no preço não paga a máquina no prazo.`,ir('#mod-impressoras'));
+    else if(i.eta!=null&&i.falta>0&&i.eta>i.meses*1.5) add('warn',`${esc(i.nome)} deve se pagar em ${num(i.eta)} meses`,`O plano era ${i.meses} meses. Ritmo atual: ${brl0(i.ritmo)} por mês.`,ir('#mod-impressoras'));
+  }
+  // qualidade dos dados
+  if(M.recJ>0&&P.receitaSemCusto/M.recJ>0.1) add('info',`${pct(P.receitaSemCusto/M.recJ)} do faturamento está sem custo conhecido`,
+    `${P.semCusto.length} produto${P.semCusto.length>1?'s':''} vendido${P.semCusto.length>1?'s':''} não ${P.semCusto.length>1?'estão':'está'} na Precificação com o mesmo nome. O lucro deles é estimado pela média (${pct(1-M.razao.custo)}).`,ir('#mod-produtos'));
+  const cn=M.clientes.canais, tp=M.clientes.tipos, nJ=M.vendasJ.length;
+  if(nJ>=10&&cn.length&&tp.length&&cn[0][1]/M.recJ>0.95&&tp[0][1]/M.recJ>0.95)
+    add('info','Canal e tipo de venda quase nunca mudam',`${pct(cn[0][1]/M.recJ)} das vendas estão como "${esc(cn[0][0])}" e ${pct(tp[0][1]/M.recJ)} como "${esc(tp[0][0])}". Se for o padrão do formulário, a análise por canal fica cega.`,ir('#mod-abc'));
+  if(M.invalidas.length) add('info',`${M.invalidas.length} registro${M.invalidas.length>1?'s':''} com data inválida`,M.invalidas.slice(0,3).map(esc).join(' · '));
+  const ordem={crit:0,warn:1,ok:2,info:3};
+  A.sort((a,b)=>ordem[a.nivel]-ordem[b.nivel]);
+  // dados velhos distorcem tudo: esse aviso vem antes de qualquer outro
+  if(M.desatualizado) A.unshift({nivel:'warn',
+    titulo:`Os dados são de ${dataBR(M.atualizadoEm)}, há ${M.diasSemAtualizar} dias`,
+    detalhe:'Vendas, produção e pagamentos lançados depois disso não aparecem aqui. Abra o CRM neste navegador ou busque a versão mais nova no Google Drive. Os alertas de queda de vendas e uso das impressoras ficam desligados até lá.',
+    acao:{tipo:'drive',label:'Buscar no Google Drive'}});
+  return A;
+}
+
+function sugestoesFixos(){
+  if(!D) return [];
+  const g=new Map();
+  for(const s of D.saidas){
+    if(CATS_SAIDA_NA_PECA.includes(s.cat)) continue;
+    const k=norm(s.desc), d=dt(s.venc)||dt(s.data); if(!k||!d) continue;
+    let x=g.get(k);
+    if(!x){x={chave:k,desc:s.desc,cat:s.cat,meses:new Set(),valor:+s.valor||0,dia:d.getDate(),ult:d};g.set(k,x);}
+    x.meses.add(ymOf(d));
+    if(d>=x.ult){x.ult=d;x.valor=+s.valor||0;x.dia=d.getDate();}
+  }
+  const ja=new Set(F.custos.map(c=>c.vinculo).filter(Boolean)), ign=new Set(F.ignorados||[]);
+  return [...g.values()].filter(x=>x.meses.size>=2&&!ja.has(x.chave)&&!ign.has(x.chave)).map(x=>Object.assign(x,{catFixo:mapearCat(x)}));
+}
+function mapearCat(x){
+  const k=x.chave;
+  if(/\bDAS\b|\bMEI\b|IMPOSTO|SIMPLES/.test(k)) return 'Impostos (DAS/MEI)';
+  if(/PRO.?LABORE/.test(k)) return 'Pró-labore';
+  if(/SALARIO|FOLHA/.test(k)) return 'Salários';
+  if(/ALUGUEL|CONDOMINIO/.test(k)) return 'Aluguel e condomínio';
+  if(/INTERNET|TELEFONE|CELULAR/.test(k)) return 'Internet e telefone';
+  if(/CONTADOR|CONTABIL/.test(k)) return 'Contador';
+  if(x.cat==='Marketing / Publicidade') return 'Marketing';
+  if(x.cat==='Plataforma / Taxa') return 'Softwares e assinaturas';
+  return 'Outros';
+}
+
+// ══════════════════════════════════════════════
+// ══ GRÁFICOS (SVG) ══
+// ══════════════════════════════════════════════
+function graf(spec){const id='g'+(++grafSeq);GRAF[id]=spec;return `<div class="chart" id="${id}" style="height:${spec.h||220}px"></div>`;}
+function eixoNice(min,max,ticks=4){
+  if(max===min) max=min+1;
+  const step0=(max-min)/ticks, mag=Math.pow(10,Math.floor(Math.log10(step0))), e=step0/mag;
+  const step=(e>=7.5?10:e>=3.5?5:e>=1.5?2:1)*mag;
+  const lo=Math.floor(min/step)*step, hi=Math.ceil(max/step)*step, t=[];
+  for(let v=lo;v<=hi+step/2;v+=step) t.push(Math.round(v*1e6)/1e6);
+  return {lo,hi,t};
+}
+function barra(x,yb,yt,w,arred,cor,op){
+  const h=Math.abs(yb-yt); if(h<0.5) return '';
+  const r=arred?Math.min(4,h,w/2):0;
+  const d=yt<yb
+    ?`M${x},${yb} V${yt+r} Q${x},${yt} ${x+r},${yt} H${x+w-r} Q${x+w},${yt} ${x+w},${yt+r} V${yb} Z`
+    :`M${x},${yb} V${yt-r} Q${x},${yt} ${x+r},${yt} H${x+w-r} Q${x+w},${yt} ${x+w},${yt-r} V${yb} Z`;
+  return `<path d="${d}" fill="${cor}" fill-opacity="${op||1}"/>`;
+}
+function svgBarras(s,W){
+  const H=s.h||220, pl=64, pr=12, pt=16, pb=26, pw=Math.max(40,W-pl-pr), ph=H-pt-pb, n=s.labels.length;
+  let max=0,min=0;
+  for(let i=0;i<n;i++){
+    if(s.empilhado){max=Math.max(max,soma(s.series,se=>se.valores[i]));}
+    else for(const se of s.series){max=Math.max(max,se.valores[i]||0);min=Math.min(min,se.valores[i]||0);}
+  }
+  if(s.ref&&s.ref.valor) max=Math.max(max,s.ref.valor);
+  const ax=eixoNice(min,max,4), y=v=>pt+ph-(v-ax.lo)/(ax.hi-ax.lo)*ph, y0=y(0);
+  const band=pw/n, k=s.empilhado?1:s.series.length, bw=Math.min(24,Math.max(4,(band*0.6-(k-1)*2)/k));
+  let g='', hits='';
+  for(const t of ax.t){const yy=y(t);g+=`<line x1="${pl}" x2="${pl+pw}" y1="${yy}" y2="${yy}" stroke="${t===0?'var(--axis)':'var(--grid)'}"/><text x="${pl-8}" y="${yy+4}" text-anchor="end" class="ax">${esc(brlK(t))}</text>`;}
+  const passo=Math.max(1,Math.ceil(n/Math.max(1,Math.floor(pw/46))));
+  for(let i=0;i<n;i++){
+    const bx=pl+band*i, cx=bx+band/2;
+    g+=`<rect class="hl" data-i="${i}" x="${bx+1}" y="${pt}" width="${Math.max(0,band-2)}" height="${ph}" rx="6" fill="var(--hover)" opacity="0"/>`;
+    if(i%passo===0) g+=`<text x="${cx}" y="${H-8}" text-anchor="middle" class="ax">${esc(s.labels[i])}</text>`;
+    const gx=cx-(k*bw+(k-1)*2)/2;
+    if(s.empilhado){
+      let base=0;
+      s.series.forEach((se,j)=>{
+        const v=se.valores[i]||0; if(v<=0) return;
+        const topo=s.series.slice(j+1).every(o=>!(o.valores[i]>0));
+        const yb=base>0?y(base)-2:y0, yt=y(base+v);
+        if(yt<yb-0.5) g+=barra(gx,yb,yt,bw,topo,se.cor,se.opac);
+        base+=v;
+      });
+    }else s.series.forEach((se,j)=>{const v=se.valores[i]||0;if(v) g+=barra(gx+j*(bw+2),y0,y(v),bw,true,se.cor,se.opac);});
+    const rot=s.rotulos?s.rotulos[i]:s.labels[i];
+    const tip=`<b>${esc(rot)}</b>`+s.series.map(se=>(se.valores[i]||!se.ocultarZero)?`<div class="tip-row"><i class="sw" style="background:${se.cor};opacity:${se.opac||1}"></i>${esc(se.nome)}<span>${esc(brl0(se.valores[i]||0))}</span></div>`:'').join('')+(s.tipExtra?s.tipExtra(i):'');
+    hits+=`<rect class="hit" data-i="${i}" x="${bx}" y="${pt}" width="${band}" height="${ph+pb}" fill="transparent" tabindex="0" aria-label="${esc(rot+': '+s.series.map(se=>se.nome+' '+brl0(se.valores[i]||0)).join(', '))}" data-tip="${esc(tip)}"/>`;
+  }
+  if(s.ref&&s.ref.valor){
+    const yy=y(s.ref.valor);
+    g+=`<line x1="${pl}" x2="${pl+pw}" y1="${yy}" y2="${yy}" stroke="var(--text2)" stroke-width="1.5" stroke-dasharray="5 4"/><text x="${pl+pw}" y="${yy-6}" text-anchor="end" class="ax-ref">${esc(s.ref.nome)}</text>`;
+  }
+  return `<svg width="${W}" height="${H}" role="img" aria-label="${esc(s.titulo||'Gráfico de barras')}">${g}${hits}</svg>`;
+}
+function svgLinha(s,W,id){
+  const H=s.h||220, pl=64, pr=14, pt=16, pb=26, pw=Math.max(40,W-pl-pr), ph=H-pt-pb, P=s.pontos, n=P.length;
+  const ax=eixoNice(Math.min(0,...P.map(p=>p.y)),Math.max(0,...P.map(p=>p.y)),4);
+  const x=i=>pl+(n<=1?0:i/(n-1)*pw), y=v=>pt+ph-(v-ax.lo)/(ax.hi-ax.lo)*ph, y0=y(0);
+  let g='';
+  for(const t of ax.t){const yy=y(t);g+=`<line x1="${pl}" x2="${pl+pw}" y1="${yy}" y2="${yy}" stroke="${t===0?'var(--axis)':'var(--grid)'}"/><text x="${pl-8}" y="${yy+4}" text-anchor="end" class="ax">${esc(brlK(t))}</text>`;}
+  const passo=Math.max(1,Math.ceil(n/Math.max(1,Math.floor(pw/70))));
+  for(let i=0;i<n;i+=passo) g+=`<text x="${x(i)}" y="${H-8}" text-anchor="${i===0?'start':'middle'}" class="ax">${diaMes(P[i].d)}</text>`;
+  const linha='M'+P.map((p,i)=>`${x(i).toFixed(1)},${y(p.y).toFixed(1)}`).join(' L');
+  const area=linha+` L${x(n-1).toFixed(1)},${y0.toFixed(1)} L${x(0).toFixed(1)},${y0.toFixed(1)} Z`;
+  g+=`<defs><clipPath id="${id}-a"><rect x="0" y="0" width="${W}" height="${Math.max(0,y0)}"/></clipPath><clipPath id="${id}-b"><rect x="0" y="${y0}" width="${W}" height="${Math.max(0,H-y0)}"/></clipPath></defs>`;
+  g+=`<path d="${area}" fill="var(--s1)" fill-opacity=".1" clip-path="url(#${id}-a)"/><path d="${area}" fill="var(--st-crit)" fill-opacity=".12" clip-path="url(#${id}-b)"/>`;
+  g+=`<path d="${linha}" fill="none" stroke="var(--s1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" clip-path="url(#${id}-a)"/><path d="${linha}" fill="none" stroke="var(--st-crit)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" clip-path="url(#${id}-b)"/>`;
+  g+=`<line x1="${pl}" x2="${pl+pw}" y1="${y0}" y2="${y0}" stroke="var(--axis)"/>`;
+  if(s.marco){const i=s.marco.i, mx=x(i), my=y(P[i].y);g+=`<circle cx="${mx}" cy="${my}" r="4.5" fill="${P[i].y<0?'var(--st-crit)':'var(--s1)'}" stroke="var(--surface)" stroke-width="2"/><text x="${Math.min(Math.max(mx,pl+40),pl+pw-40)}" y="${my+(my>pt+ph-24?-12:18)}" text-anchor="middle" class="ax-ref">${esc(s.marco.nome)}</text>`;}
+  g+=`<line class="xh" x1="0" x2="0" y1="${pt}" y2="${pt+ph}" stroke="var(--text3)" opacity="0"/><circle class="xd" r="4.5" cx="0" cy="0" fill="var(--s1)" stroke="var(--surface)" stroke-width="2" opacity="0"/>`;
+  const step=pw/Math.max(1,n-1);
+  let hits='';
+  for(let i=0;i<n;i++){
+    const p=P[i];
+    const tip=`<b>${dataBR(p.d)}</b><div class="tip-row"><i class="sw" style="background:${p.y<0?'var(--st-crit)':'var(--s1)'}"></i>${esc(s.nome)}<span>${esc(brl0(p.y))}</span></div>`+
+      (p.ev&&p.ev.length?p.ev.slice(0,4).map(e=>`<div class="tip-ev">${e.valor<0?'−':'+'} ${esc(brl0(Math.abs(e.valor)))} · ${esc(e.desc)}</div>`).join('')+(p.ev.length>4?`<div class="tip-ev">+ ${p.ev.length-4} lançamentos</div>`:''):'');
+    hits+=`<rect class="hit" data-i="${i}" data-cx="${x(i).toFixed(1)}" data-cy="${y(p.y).toFixed(1)}" data-neg="${p.y<0?1:0}" x="${(x(i)-step/2).toFixed(1)}" y="${pt}" width="${step.toFixed(2)}" height="${ph}" fill="transparent" data-tip="${esc(tip)}"/>`;
+  }
+  return `<svg width="${W}" height="${H}" role="img" aria-label="${esc(s.titulo||'Gráfico de linha')}">${g}${hits}</svg>`;
+}
+function desenharGraficos(){
+  for(const id in GRAF){
+    const el=document.getElementById(id); if(!el) continue;
+    const s=GRAF[id], W=el.clientWidth||600;
+    el.innerHTML=s.tipo==='linha'?svgLinha(s,W,id):svgBarras(s,W);
+    ligarTooltip(el);
+  }
+}
+function ligarTooltip(el){
+  const novo=document.createElement('div'); novo.className='tip'; el.appendChild(novo);
+  if(el._lig) return; // ao redesenhar (resize) os eventos já estão ligados
+  el._lig=true;
+  const limpar=()=>{
+    const tip=el.querySelector('.tip'), svg=el.querySelector('svg'); if(!tip||!svg) return;
+    tip.style.display='none';svg.querySelectorAll('.hl').forEach(h=>h.setAttribute('opacity','0'));
+    const xh=svg.querySelector('.xh'),xd=svg.querySelector('.xd');if(xh){xh.setAttribute('opacity','0');xd.setAttribute('opacity','0');}
+  };
+  const mostrar=(hit,cx,cy)=>{
+    const tip=el.querySelector('.tip'), svg=el.querySelector('svg'); if(!tip||!svg) return;
+    tip.innerHTML=hit.getAttribute('data-tip'); tip.style.display='block';
+    const r=el.getBoundingClientRect(), tw=tip.offsetWidth, th=tip.offsetHeight;
+    let px=cx-r.left+14, py=cy-r.top-th/2;
+    if(px+tw>r.width) px=cx-r.left-tw-14;
+    tip.style.left=Math.max(0,px)+'px'; tip.style.top=Math.max(-8,Math.min(py,r.height-th))+'px';
+    const i=hit.dataset.i;
+    svg.querySelectorAll('.hl').forEach(h=>h.setAttribute('opacity',h.dataset.i===i?'1':'0'));
+    const xh=svg.querySelector('.xh'), xd=svg.querySelector('.xd');
+    if(xh&&hit.dataset.cx){
+      xh.setAttribute('x1',hit.dataset.cx);xh.setAttribute('x2',hit.dataset.cx);xh.setAttribute('opacity','1');
+      xd.setAttribute('cx',hit.dataset.cx);xd.setAttribute('cy',hit.dataset.cy);xd.setAttribute('fill',hit.dataset.neg==='1'?'var(--st-crit)':'var(--s1)');xd.setAttribute('opacity','1');
+    }
+  };
+  el.addEventListener('pointermove',e=>{const h=e.target.closest('[data-tip]');if(h) mostrar(h,e.clientX,e.clientY);else limpar();});
+  el.addEventListener('pointerleave',limpar);
+  el.addEventListener('focusin',e=>{const h=e.target.closest('[data-tip]');if(!h)return;const b=h.getBoundingClientRect();mostrar(h,b.left+b.width/2,b.top+b.height/3);});
+  el.addEventListener('focusout',limpar);
+}
+function gauge(v,nivel){
+  const L=Math.PI*80, f=L*clamp((v||0)/100);
+  return `<svg viewBox="0 0 200 116" class="gauge" role="img" aria-label="Nota ${v??'sem dados'} de 100">
+    <path d="M20,100 A80,80 0 0 1 180,100" fill="none" stroke="var(--track)" stroke-width="14" stroke-linecap="round"/>
+    ${v?`<path d="M20,100 A80,80 0 0 1 180,100" fill="none" stroke="${NIVEL[nivel].cor}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${f.toFixed(1)} ${L.toFixed(1)}"/>`:''}
+    <text x="100" y="90" text-anchor="middle" class="g-num">${v??'—'}</text><text x="100" y="110" text-anchor="middle" class="g-sub">de 100</text></svg>`;
+}
+function corNota(s){return s==null?'var(--track)':s>=0.75?'var(--st-good)':s>=0.5?'var(--st-warn)':'var(--st-crit)';}
+function tabelaVer(cab,linhas,rot='Ver como tabela'){
+  return `<details class="tv"><summary>${rot}</summary><div class="table-wrap"><table class="t"><thead><tr>${cab.map((c,i)=>`<th${i?' class="num"':''}>${c}</th>`).join('')}</tr></thead><tbody>${linhas.map(l=>`<tr>${l.map((c,i)=>`<td${i?' class="num"':''}>${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div></details>`;
+}
+
+// ══════════════════════════════════════════════
+// ══ SEÇÕES ══
+// ══════════════════════════════════════════════
+function badgeNivel(n,txt){const x=NIVEL[n];return `<span class="badge ${x.cls}"><i class="ti ${x.icon}" aria-hidden="true"></i>${txt||x.rot}</span>`;}
+function itemAlerta(a){
+  const n=NIVEL[a.nivel];
+  return `<div class="alert"><div class="alert-ic ${n.cls}"><i class="ti ${n.icon}" aria-hidden="true"></i></div><div class="alert-body">
+    <div class="alert-top">${badgeNivel(a.nivel)}<span class="alert-t">${a.titulo}</span></div>
+    <div class="alert-d">${a.detalhe}</div>
+    ${a.acao?`<button class="link" data-acao="${a.acao.tipo}" data-alvo="${a.acao.alvo||''}">${a.acao.label} <i class="ti ti-arrow-right" aria-hidden="true"></i></button>`:''}
+  </div></div>`;
+}
+function tile(label,valor,sub,cls){return `<div class="tile"><div class="tile-label">${label}</div><div class="tile-value ${cls||''}">${valor}</div>${sub?`<div class="tile-sub">${sub}</div>`:''}</div>`;}
+function cabecalho(icon,titulo,desc,extra){return `<div class="card-h"><div><div class="sec-title"><i class="ti ${icon}" aria-hidden="true"></i>${titulo}</div>${desc?`<div class="sec-desc">${desc}</div>`:''}</div>${extra||''}</div>`;}
+const sinal=v=>v>0.5?'pos':v<-0.5?'neg':'';
+
+function secDiagnostico(){
+  const S=M.score, C=M.caixa, nm=nomeMes(mesRef,true), dre=M.dre;
+  const rotScore={ok:'Saudável',warn:'Atenção',crit:'Crítico',info:'Sem dados suficientes'}[S.nivel];
+  const acao=M.alertas.filter(a=>a.nivel==='crit'||a.nivel==='warn');
+  const bem=M.alertas.filter(a=>a.nivel==='ok'), dados=M.alertas.filter(a=>a.nivel==='info');
+  return `
+  <section class="grid g-hero">
+    <div class="card">
+      ${cabecalho('ti-heart-rate-monitor','Termômetro da empresa')}
+      ${gauge(S.valor,S.nivel)}
+      <div class="g-label">${badgeNivel(S.nivel,rotScore)}</div>
+      <div class="score-rows">${S.comp.map(c=>`<div class="score-row" title="${esc(c.dica)}"><span>${c.nome}</span><div class="meter"><span style="width:${c.s==null?0:Math.round(c.s*100)}%;background:${corNota(c.s)}"></span></div><span class="num">${c.s==null?'sem dados':Math.round(c.s*100)}</span></div>`).join('')}</div>
+      <p class="hint">Média ponderada: equilíbrio 30, caixa 25, margem 20, contas em dia 15, dados completos 10. Passe o mouse em cada linha para ver a conta.</p>
+    </div>
+    <div class="card">
+      ${cabecalho('ti-calendar-stats',`${nm[0].toUpperCase()+nm.slice(1)} em números`,M.emAndamento?`Mês em andamento: dia ${HOJE.getDate()} de ${diasNoMes(mesRef)}.`:'Mês fechado.')}
+      <div class="tiles">
+        ${tile('Faturamento',brl0(dre.receita),`${M.emAndamento?'projeção '+brl0(M.projMes)+' · ':''}equilíbrio ${M.pe?brl0(M.pe):'sem custos fixos'}`)}
+        ${tile('Resultado econômico',brl0(dre.resultado),`margem ${brl0(dre.mc)} − fixos ${brl0(dre.fixos)}${dre.avulsas?' − avulsas '+brl0(dre.avulsas):''}`,sinal(dre.resultado))}
+        ${C.temSaldo?tile('Caixa em 30 dias',brl0(C.em30),`hoje ${brl0(C.saldoHoje)} · mínimo em 90 dias ${brl0(C.min.y)}`,sinal(C.em30)):tile('Caixa em 30 dias','Sem saldo',`variação prevista ${brl0(C.em30)}. <button class="link" data-acao="fixos" data-alvo="saldo" style="margin:0">Informar saldo</button>`)}
+        ${tile('Margem econômica',pct(M.margemEcon),`meta ${+F.metaMargem||30}% · ${M.janela.rot}`,M.margemEcon==null?'':M.margemEcon>=(+F.metaMargem||30)/100?'pos':M.margemEcon<0?'neg':'')}
+        ${tile('Ticket médio',brl0(M.ticket),dre.n?`${dre.n} venda${dre.n===1?'':'s'} no mês`:`nenhuma venda no mês · média de ${M.janela.rot}`)}
+        ${tile('A pagar vencido',brl0(C.vencidasTotal),`${C.vencidas.length} conta${C.vencidas.length===1?'':'s'} · a receber ${brl0(C.aReceberTotal)}`,C.vencidasTotal>0?'neg':'')}
+      </div>
+    </div>
+  </section>
+  <section class="grid g-2">
+    <div class="card">${cabecalho('ti-urgent','Precisa de ação',`${acao.length} ponto${acao.length===1?'':'s'}, do mais grave para o menos grave.`)}
+      <div class="alerts">${acao.length?acao.map(itemAlerta).join(''):'<div class="vazio">Nada urgente agora.</div>'}</div></div>
+    <div class="card">${cabecalho('ti-thumb-up','Indo bem')}
+      <div class="alerts">${bem.length?bem.map(itemAlerta).join(''):'<div class="vazio">Assim que houver custos fixos e saldo cadastrados, os pontos fortes aparecem aqui.</div>'}</div>
+      ${dados.length?`<div class="sec-title sm"><i class="ti ti-database-search" aria-hidden="true"></i>Para os números ficarem certos</div><div class="alerts">${dados.map(itemAlerta).join('')}</div>`:''}
+    </div>
+  </section>
+  <nav class="nav-chips" aria-label="Módulos">
+    ${[['mod-equilibrio','ti-scale','Ponto de equilíbrio'],['mod-produtos','ti-receipt-2','Lucro por produto'],['mod-caixa','ti-arrows-exchange','Fluxo de caixa'],['mod-folha','ti-users','Salários'],['mod-vendas','ti-chart-line','Vendas'],['mod-abc','ti-trophy','Pontos fortes'],['mod-capital','ti-packages','Capital parado'],['mod-impressoras','ti-printer','Impressoras']]
+      .map(([id,ic,t])=>`<a class="chip" href="#${id}"><i class="ti ${ic}" aria-hidden="true"></i>${t}</a>`).join('')}
+  </nav>`;
+}
+
+function secEquilibrio(){
+  const dre=M.dre, nm=nomeMes(mesRef,true);
+  const desc='Ponto de equilíbrio = custos fixos ÷ margem de contribuição. Margem de contribuição é o que sobra de cada venda depois do custo da peça (filamento, energia, manutenção, retorno da máquina, falhas, embalagem e taxas).';
+  let topo;
+  if(!M.fixos){
+    topo=`<div class="empty"><i class="ti ti-scale big" aria-hidden="true"></i><h2>Falta cadastrar os custos fixos</h2><p>Com pró-labore, salários, DAS, internet e assinaturas cadastrados, o painel mostra quanto vocês precisam faturar por mês para não ter prejuízo.</p><div class="acts"><button class="btn btn-primary" data-acao="fixos"><i class="ti ti-plus" aria-hidden="true"></i>Cadastrar custos fixos</button></div></div>`;
+  }else if(!M.pe){
+    topo=M.mcPct!=null&&M.mcPct<=0
+      ?`<div class="alert"><div class="alert-ic b-crit"><i class="ti ti-alert-octagon" aria-hidden="true"></i></div><div class="alert-body"><div class="alert-t">A margem de contribuição está negativa (${pct(M.mcPct)})</div><div class="alert-d">Em ${M.janela.rot}, as vendas não cobriram nem o custo das peças. Nenhum volume de vendas paga os custos fixos assim: revise preços na Precificação.</div></div></div>`
+      :`<div class="vazio">Sem vendas em ${M.janela.rot} para calcular a margem de contribuição.</div>`;
+  }else{
+    const escala=Math.max(M.pe,M.projMes,dre.receita)*1.12||1;
+    const wReal=dre.receita/escala*100, wProj=M.emAndamento?Math.max(0,(M.projMes-dre.receita)/escala*100):0, xPe=M.pe/escala*100;
+    const falta=Math.max(0,M.pe-dre.receita), nv=M.ticket>0?Math.ceil(falta/M.ticket):null;
+    topo=`
+      <div style="display:flex;flex-wrap:wrap;gap:6px 24px;align-items:baseline">
+        <div><div class="tile-label">Vocês precisam faturar por mês</div><div class="hero-num">${brl0(M.pe)}</div></div>
+        <div class="sec-desc" style="max-width:420px">para pagar ${brl0(M.fixos)} de custos fixos com margem de contribuição de ${pct(M.mcPct)} (média de ${M.janela.rot}).</div>
+      </div>
+      <div class="pe-bar" role="img" aria-label="Faturamento ${brl0(dre.receita)} de ${brl0(M.pe)} necessários">
+        <div class="pe-fill" style="width:${wReal.toFixed(1)}%"></div>
+        ${wProj>0?`<div class="pe-proj" style="left:${wReal.toFixed(1)}%;width:${wProj.toFixed(1)}%"></div>`:''}
+        <div class="pe-mark" style="left:${xPe.toFixed(1)}%"><span>Equilíbrio ${brlK(M.pe)}</span></div>
+      </div>
+      <div class="pe-legend"><span><i class="sw" style="background:var(--s1)"></i> Faturado em ${nm}: ${brl0(dre.receita)}</span>${wProj>0?`<span><i class="sw" style="background:var(--s1);opacity:.3"></i> Projeção até o fim do mês: ${brl0(M.projMes)}</span>`:''}</div>
+      <div class="tiles" style="margin-top:16px">
+        ${tile(falta>0?'Falta faturar':'Acima do equilíbrio',brl0(falta>0?falta:dre.receita-M.pe),falta>0&&nv?`cerca de ${nv} venda${nv>1?'s':''} de ${brl0(M.ticket)}`:M.diaPE?`atingido no dia ${M.diaPE.getDate()}`:'',falta>0?'':'pos')}
+        ${tile('Margem de contribuição',pct(M.mcPct),`de cada R$ 100 vendidos, sobram ${brl0((M.mcPct||0)*100)}`)}
+        ${tile('Custos fixos do mês',brl0(M.fixos),M.folha?`${brl0(M.folha)} em salários e pró-labore`:'sem salários cadastrados')}
+        ${tile('Equilíbrio por dia',brl0(M.pe/diasNoMes(mesRef)),`ou ${brl0(M.pe/ (diasNoMes(mesRef)*5/7))} por dia útil`)}
+      </div>`;
+  }
+  const linhas=[
+    ['Faturamento',brl(dre.receita),''],
+    [`(−) Custo das peças vendidas${dre.semHora?' <span class="badge b-neutro">sem a hora do operador</span>':''}`,brl(-dre.custoPecas),dre.receitaEst?`${brl0(dre.receitaEst)} em vendas sem precificação, custo estimado pela média`:''],
+    ['= Margem de contribuição',brl(dre.mc),pct(dre.mcPct)+' do faturamento'],
+    ['(−) Custos fixos',brl(-dre.fixos),dre.fixos?F.custos.filter(c=>c.ativo!==false&&(!c.inicio||c.inicio<=mesRef)&&(!c.fim||c.fim>=mesRef)).length+' itens cadastrados':'nenhum cadastrado'],
+    ['(−) Despesas avulsas (Saídas)',brl(-dre.avulsas),dre.avulsasLista.length?dre.avulsasLista.slice(0,3).map(s=>esc(s.desc)).join(', ')+(dre.avulsasLista.length>3?'…':''):'marketing, taxas e outros que não são custo fixo'],
+  ];
+  return `<section class="card" id="mod-equilibrio">
+    ${cabecalho('ti-scale','Ponto de equilíbrio',desc)}
+    ${topo}
+    <div class="sec-title sm"><i class="ti ti-list-numbers" aria-hidden="true"></i>Resultado de ${nm}</div>
+    <div class="table-wrap"><table class="t"><tbody>
+      ${linhas.map(l=>`<tr><td>${l[0]}</td><td class="num">${l[1]}</td><td class="dre-nota">${l[2]}</td></tr>`).join('')}
+      <tr class="tot"><td>= Resultado econômico</td><td class="num ${sinal(dre.resultado)}">${brl(dre.resultado)}</td><td class="dre-nota" style="font-weight:400">${M.emAndamento?'parcial, mês em andamento':''}</td></tr>
+    </tbody></table></div>
+    ${dre.semHora?'<p class="hint">Como há salários ou pró-labore cadastrados, a hora do operador que está no custo de cada peça sai desta conta: ela já é paga pela folha e contaria duas vezes.</p>':''}
+  </section>`;
+}
+
+function secProdutos(){
+  const P=M.produtos, meta=(+F.metaMargem||30)/100;
+  const comp=P.comp, rc=P.recConh, lucro=rc-soma(Object.values(comp));
+  const seg=[['Lucro','var(--s1)',lucro],['Filamento e falhas','var(--s2)',comp.fil],['Máquina e energia','var(--s3)',comp.maq],['Hora do operador','var(--s4)',comp.mao],['Embalagem e taxas','var(--s5)',comp.emb]];
+  const bMargem=p=>p.margem==null?'':p.margem<0?badgeNivel('crit',pct(p.margem)):p.margem<meta?badgeNivel('warn',pct(p.margem)):badgeNivel('ok',pct(p.margem));
+  const linha=p=>`<tr><td><div class="prod" title="${esc(p.nome)}">${esc(p.nome)}</div>${p.conhecido?'':'<span class="badge b-neutro">custo estimado</span>'}${p.nDesc?` <span class="badge b-warn" title="Vendido abaixo do preço da Precificação">desconto ${brl0(p.desconto)}</span>`:''}</td>
+    <td class="num">${num(p.un)}</td><td class="num">${brl(p.precoUn)}</td><td class="num">${brl(p.custoUn)}</td><td class="num ${sinal(p.lucroUn)}">${brl(p.lucroUn)}</td><td class="num">${bMargem(p)}</td><td class="num ${sinal(p.lucro)}">${brl0(p.lucro)}</td></tr>`;
+  const cab=`<thead><tr><th>Produto</th><th class="num">Un.</th><th class="num">Preço médio</th><th class="num">Custo un.</th><th class="num">Lucro un.</th><th class="num">Margem</th><th class="num">Lucro total</th></tr></thead>`;
+  const lista=P.porLucro;
+  return `<section class="card" id="mod-produtos">
+    ${cabecalho('ti-receipt-2','Lucro real por produto',`Lucro econômico = preço cobrado − custo completo da peça (filamento, energia, manutenção, retorno da impressora, falhas, depreciação, hora do operador, embalagem e taxas), como na Precificação do CRM. Período: ${M.janela.rot}.`)}
+    ${rc>0?`<div class="sec-title sm" style="margin-top:0"><i class="ti ti-chart-donut-3" aria-hidden="true"></i>Para onde vai cada R$ 100 vendidos</div>
+    <div class="stack" role="img" aria-label="${esc(seg.map(s=>s[0]+' '+brl0(s[2]/rc*100)).join(', '))}">${seg.filter(s=>s[2]>0).map(s=>`<div style="flex:${(s[2]/rc).toFixed(4)};background:${s[1]}" title="${esc(s[0])}: ${brl0(s[2]/rc*100)}"></div>`).join('')}</div>
+    <div class="stack-leg">${seg.map(s=>`<div><i class="sw" style="background:${s[1]}"></i>${s[0]}<b>${brl0(s[2]/rc*100)}</b></div>`).join('')}</div>
+    <p class="hint">Máquina e energia = energia elétrica, manutenção, retorno do investimento e depreciação da impressora.</p>`:''}
+    <div class="sec-title sm"><i class="ti ti-list" aria-hidden="true"></i>Produtos por lucro total</div>
+    ${lista.length?`<div class="table-wrap"><table class="t">${cab}<tbody>${lista.slice(0,12).map(linha).join('')}</tbody></table></div>
+    ${lista.length>12?`<details class="mais"><summary>Ver os outros ${lista.length-12} produtos</summary><div class="table-wrap"><table class="t">${cab}<tbody>${lista.slice(12).map(linha).join('')}</tbody></table></div></details>`:''}`:'<div class="vazio">Sem vendas no período.</div>'}
+    <p class="hint">"Custo estimado": o produto não foi achado na Precificação pelo vínculo nem pelo nome. Ele usa a proporção média de custo das outras vendas (${pct(M.razao.custo)} do preço).</p>
+  </section>`;
+}
+
+function secCaixa(){
+  const C=M.caixa;
+  const marco=C.min?{i:C.min.i,nome:`mínimo ${brlK(C.min.y)}`}:null;
+  const linhaProj=graf({tipo:'linha',h:240,pontos:C.pontos,nome:C.temSaldo?'Saldo previsto':'Variação prevista',marco,titulo:'Projeção de caixa para 90 dias'});
+  const mensal=C.mensal;
+  const barrasMes=mensal.length?graf({tipo:'barras',h:230,labels:mensal.map(m=>nomeMes(m.ym)),rotulos:mensal.map(m=>nomeMes(m.ym,true)),titulo:'Entradas e saídas por mês',
+    series:[{nome:'Entradas',cor:'var(--s1)',valores:mensal.map(m=>m.ent)},{nome:'Saídas',cor:'var(--s2)',valores:mensal.map(m=>m.sai)}],
+    tipExtra:i=>`<div class="tip-row" style="border-top:1px solid var(--border);margin-top:5px;padding-top:4px">Saldo do mês<span>${esc(brl0(mensal[i].ent-mensal[i].sai))}</span></div>`}):'';
+  const tabContas=(lista,vazio)=>lista.length?`<div class="table-wrap"><table class="t"><thead><tr><th>Vencimento</th><th>Descrição</th><th class="num">Valor</th></tr></thead><tbody>${lista.slice(0,8).map(s=>`<tr><td>${dataBR(s.dVenc)}</td><td><div class="prod" title="${esc(s.desc)}">${esc(s.desc)}</div></td><td class="num">${brl(s.valor)}</td></tr>`).join('')}${lista.length>8?`<tr><td colspan="2" style="color:var(--text3)">+ ${lista.length-8} contas</td><td class="num">${brl(soma(lista.slice(8),s=>s.valor))}</td></tr>`:''}</tbody></table></div>`:`<div class="vazio">${vazio}</div>`;
+  return `<section class="card" id="mod-caixa">
+    ${cabecalho('ti-arrows-exchange','Fluxo de caixa',`Entradas = vendas recebidas. Saídas = contas pagas em Saídas. A projeção soma o que está a receber e a pagar, os custos fixos que não estão lançados nas Saídas, parcelas de patrimônio${F.previsaoVendas!==false?' e a média de vendas dos últimos 90 dias':''}.`,
+      `<label class="fg-check fg" style="display:flex"><input type="checkbox" id="chk-prev" ${F.previsaoVendas!==false?'checked':''}> Incluir previsão de vendas (${brl0(C.mediaDiaria*30)}/mês)</label>`)}
+    <div class="tiles">
+      ${C.temSaldo?tile('Saldo em caixa hoje',brl0(C.saldoHoje),`informado em ${dataBR(dt(F.saldo.data))} e atualizado com o que entrou e saiu`,sinal(C.saldoHoje)):tile('Saldo em caixa hoje','Não informado','<button class="link" data-acao="fixos" data-alvo="saldo" style="margin:0">Informar saldo</button>')}
+      ${tile('A receber',brl0(C.aReceberTotal),`${C.aReceber.length} venda${C.aReceber.length===1?'':'s'} não recebida${C.aReceber.length===1?'':'s'}`)}
+      ${tile('A pagar em 30 dias',brl0(soma(C.aPagar30,s=>s.valor)),`${C.aPagar30.length} conta${C.aPagar30.length===1?'':'s'}`)}
+      ${tile('Vencido e não pago',brl0(C.vencidasTotal),`${C.vencidas.length} conta${C.vencidas.length===1?'':'s'}`,C.vencidasTotal>0?'neg':'')}
+    </div>
+    <div class="sec-title sm"><i class="ti ti-chart-line" aria-hidden="true"></i>${C.temSaldo?'Saldo previsto':'Variação prevista do caixa'} nos próximos 90 dias</div>
+    ${!C.temSaldo?'<p class="hint" style="margin:-4px 0 8px">Começa em zero porque o saldo de hoje não foi informado. A linha mostra quanto o caixa sobe ou desce a partir de hoje.</p>':''}
+    ${linhaProj}
+    ${tabelaVer(['Data','Saldo','Lançamentos do dia'],C.pontos.filter((p,i)=>i%7===0||p.ev.length).map(p=>[dataBR(p.d),brl0(p.y),p.ev.length?p.ev.map(e=>(e.valor<0?'−':'+')+brl0(Math.abs(e.valor))+' '+esc(e.desc)).join('<br>'):'—']))}
+    ${mensal.length?`<div class="sec-title sm"><i class="ti ti-chart-bar" aria-hidden="true"></i>Entradas e saídas por mês</div>
+    <div class="legend"><span><i class="sw" style="background:var(--s1)"></i>Entradas</span><span><i class="sw" style="background:var(--s2)"></i>Saídas</span></div>${barrasMes}
+    ${tabelaVer(['Mês','Entradas','Saídas','Saldo do mês'],mensal.map(m=>[nomeMes(m.ym,true),brl0(m.ent),brl0(m.sai),brl0(m.ent-m.sai)]))}
+    <p class="hint">Compras de patrimônio (impressoras, móveis, notebook) ficam fora deste gráfico. Só as parcelas futuras entram na projeção.</p>`:''}
+    <div class="grid g-2" style="margin-top:12px">
+      <div><div class="sec-title sm"><i class="ti ti-alert-octagon" aria-hidden="true"></i>Vencidas e não pagas</div>${tabContas(C.vencidas,'Nenhuma conta vencida.')}</div>
+      <div><div class="sec-title sm"><i class="ti ti-calendar-due" aria-hidden="true"></i>Próximos 30 dias</div>${tabContas(C.aPagar30,'Nada a pagar nos próximos 30 dias.')}</div>
+    </div>
+  </section>`;
+}
+
+function secFolha(){
+  const itens=F.custos.filter(c=>c.ativo!==false&&ehFolha(c)&&(!c.inicio||c.inicio<=mesRef)&&(!c.fim||c.fim>=mesRef));
+  if(!M.folha) return `<section class="card" id="mod-folha">${cabecalho('ti-users','Salários e pró-labore')}
+    <div class="empty"><i class="ti ti-users big" aria-hidden="true"></i><h2>Nenhum salário ou pró-labore cadastrado</h2><p>Cadastre quanto cada pessoa retira por mês. O painel mostra o peso da folha no faturamento e quanto é preciso vender só para pagá-la.</p><div class="acts"><button class="btn btn-primary" data-acao="fixos"><i class="ti ti-plus" aria-hidden="true"></i>Cadastrar pró-labore</button></div></div></section>`;
+  const pctF=M.receitaMedia3m>0?M.folha/M.receitaMedia3m:null;
+  const precisa=M.mcPct>0?M.folha/M.mcPct:null;
+  const horas=soma(M.producao.filter(p=>p.d>=M.janela.ini&&p.d<=M.janela.fim),p=>p.horas)/3;
+  return `<section class="card" id="mod-folha">
+    ${cabecalho('ti-users','Salários e pró-labore','Soma dos custos fixos nas categorias pró-labore, salários e encargos. Comparado com o faturamento médio dos últimos 3 meses.')}
+    <div class="tiles">
+      ${tile('Folha do mês',brl0(M.folha),`${itens.length} ${itens.length===1?'pessoa ou item':'pessoas ou itens'}`)}
+      ${tile('Peso no faturamento',pct(pctF),`faturamento médio ${brl0(M.receitaMedia3m)}/mês`,pctF>0.5?'neg':'')}
+      ${tile('Faturamento só para a folha',precisa?brl0(precisa):'—',precisa?`com margem de contribuição de ${pct(M.mcPct)}`:'sem margem calculada')}
+      ${tile('Folha por hora impressa',horas>0?brl(M.folha/horas):'—',horas>0?`${num(horas)} h impressas por mês, em média`:'sem produção no período')}
+    </div>
+    <div class="table-wrap" style="margin-top:12px"><table class="t"><thead><tr><th>Item</th><th>Categoria</th><th class="num">Valor mensal</th><th class="num">% do faturamento</th></tr></thead><tbody>
+      ${itens.map(c=>`<tr><td>${esc(c.desc)}</td><td>${esc(c.cat)}</td><td class="num">${brl(+c.valor)}</td><td class="num">${pct(M.receitaMedia3m>0?+c.valor/M.receitaMedia3m:null)}</td></tr>`).join('')}
+    </tbody></table></div>
+  </section>`;
+}
+
+function secVendas(){
+  const T=M.tend;
+  if(!T.meses.length) return `<section class="card" id="mod-vendas">${cabecalho('ti-chart-line','Vendas e tendência')}<div class="vazio">Sem vendas até ${nomeMes(mesRef,true)}.</div></section>`;
+  const temProj=T.meses.some(m=>m.proj>0);
+  const series=[{nome:'Faturado',cor:'var(--s1)',valores:T.meses.map(m=>m.receita)}];
+  if(temProj) series.push({nome:'Projeção do mês',cor:'var(--s1)',opac:.3,valores:T.meses.map(m=>m.proj),ocultarZero:true});
+  const g=graf({tipo:'barras',h:240,empilhado:true,labels:T.meses.map(m=>nomeMes(m.ym)),rotulos:T.meses.map(m=>nomeMes(m.ym,true)),series,titulo:'Faturamento por mês',
+    ref:M.pe?{valor:M.pe,nome:`Equilíbrio ${brlK(M.pe)}`}:null,
+    tipExtra:i=>`<div class="tip-row">Vendas<span>${T.meses[i].n}</span></div><div class="tip-row">Ticket médio<span>${esc(brl0(T.meses[i].ticket))}</span></div>`});
+  const ult=T.meses[T.meses.length-1], ant=T.meses.length>1?T.meses[T.meses.length-2]:null;
+  return `<section class="card" id="mod-vendas">
+    ${cabecalho('ti-chart-line','Vendas e tendência','Faturamento por mês de venda. A linha tracejada é o ponto de equilíbrio atual.')}
+    <div class="tiles" style="margin-bottom:14px">
+      ${tile('Últimos 30 dias',brl0(T.ult30),T.var30==null?'sem base de comparação':`${T.var30>=0?'+':''}${pct(T.var30)} contra os 30 dias anteriores`,T.var30==null?'':T.var30>=0?'pos':'neg')}
+      ${tile('Ticket médio do mês',brl0(ult.ticket),ant?`${nomeMes(ant.ym)}: ${brl0(ant.ticket)}`:'')}
+      ${tile('Vendas no mês',num(ult.n),ant?`${nomeMes(ant.ym)}: ${num(ant.n)}`:'')}
+      ${tile('Melhor mês',T.melhor?brl0(T.melhor.receita):'—',T.melhor?nomeMes(T.melhor.ym,true):'')}
+    </div>
+    <div class="legend"><span><i class="sw" style="background:var(--s1)"></i>Faturado</span>${temProj?'<span><i class="sw" style="background:var(--s1);opacity:.3"></i>Projeção do mês</span>':''}${M.pe?'<span><i class="sw-line"></i>Ponto de equilíbrio</span>':''}</div>
+    ${g}
+    ${tabelaVer(['Mês','Faturamento','Vendas','Ticket médio'],T.meses.map(m=>[nomeMes(m.ym,true),brl0(m.receita)+(m.proj?` (projeção ${brl0(m.receita+m.proj)})`:''),num(m.n),brl0(m.ticket)]))}
+  </section>`;
+}
+
+function secABC(){
+  const P=M.produtos, Cl=M.clientes;
+  const bClasse=c=>`<span class="badge ${c==='A'?'b-ok':c==='B'?'b-info':'b-neutro'}">${c}</span>`;
+  const nA=P.porRec.filter(p=>p.classe==='A').length;
+  const barraShare=(v,max)=>`<div class="share"><div class="meter"><span style="width:${max?Math.round(v/max*100):0}%;background:var(--s1)"></span></div></div>`;
+  const maxP=P.porRec[0]?P.porRec[0].receita:0, maxC=Cl.lista[0]?Cl.lista[0].receita:0;
+  const dist=(lista,tot)=>lista.slice(0,5).map(([k,v])=>`<span class="badge b-neutro">${esc(k)} ${pct(tot?v/tot:0)}</span>`).join(' ');
+  return `<section class="card" id="mod-abc">
+    ${cabecalho('ti-trophy','Pontos fortes (curva ABC)',`Classe A = itens que somam os primeiros 80% do faturamento, B = os 15% seguintes, C = o resto. Período: ${M.janela.rot}.`)}
+    <div class="tiles" style="margin-bottom:6px">
+      ${tile('Produtos classe A',`${nA} de ${P.porRec.length}`,P.porRec.length?`${pct(nA/P.porRec.length)} dos produtos fazem 80% do faturamento`:'')}
+      ${tile('Clientes no período',num(Cl.lista.length),Cl.lista[0]?`maior: ${esc(Cl.lista[0].nome)} (${pct(Cl.lista[0].share)})`:'')}
+    </div>
+    <div class="grid g-2">
+      <div><div class="sec-title sm"><i class="ti ti-box" aria-hidden="true"></i>Produtos que mais faturam</div>
+        <div class="table-wrap"><table class="t"><thead><tr><th>Classe</th><th>Produto</th><th class="num">Faturamento</th><th class="num">Lucro</th><th style="min-width:80px"></th></tr></thead><tbody>
+        ${P.porRec.slice(0,10).map(p=>`<tr><td>${bClasse(p.classe)}</td><td><div class="prod" style="max-width:190px" title="${esc(p.nome)}">${esc(p.nome)}</div></td><td class="num">${brl0(p.receita)}</td><td class="num ${sinal(p.lucro)}">${brl0(p.lucro)}</td><td>${barraShare(p.receita,maxP)}</td></tr>`).join('')||'<tr><td colspan="5" class="vazio">Sem vendas.</td></tr>'}
+        </tbody></table></div></div>
+      <div><div class="sec-title sm"><i class="ti ti-user-star" aria-hidden="true"></i>Clientes que mais compram</div>
+        <div class="table-wrap"><table class="t"><thead><tr><th>Classe</th><th>Cliente</th><th class="num">Faturamento</th><th class="num">Compras</th><th style="min-width:80px"></th></tr></thead><tbody>
+        ${Cl.lista.slice(0,10).map(c=>`<tr><td>${bClasse(c.classe)}</td><td><div class="prod" style="max-width:170px" title="${esc(c.nome)}">${esc(c.nome)}</div></td><td class="num">${brl0(c.receita)}</td><td class="num">${c.n}</td><td>${barraShare(c.receita,maxC)}</td></tr>`).join('')||'<tr><td colspan="5" class="vazio">Sem vendas.</td></tr>'}
+        </tbody></table></div></div>
+    </div>
+    <div class="sec-title sm"><i class="ti ti-route" aria-hidden="true"></i>Canais e tipos de venda</div>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--text2)">
+      <div>Canal: ${dist(Cl.canais,Cl.total)||'—'}</div><div>Tipo: ${dist(Cl.tipos,Cl.total)||'—'}</div>
+    </div>
+  </section>`;
+}
+
+function secCapital(){
+  const K=M.capital;
+  const dias=d=>d==null?'nunca vendido':`${d} dias`;
+  return `<section class="card" id="mod-capital">
+    ${cabecalho('ti-packages','Capital parado',`Dinheiro empatado em estoque (a preço de custo) e em filamento nas bobinas. "Parado" = sem venda ou sem uso há ${DIAS_PARADO} dias ou mais.`)}
+    <div class="tiles">
+      ${tile('Estoque a custo',brl0(K.estoqueTotal),`${K.estoque.length} produtos · ${brl0(soma(K.estoque,e=>e.venda))} a preço de venda`)}
+      ${tile('Filamento nas bobinas',brl0(K.filTotal),`${K.fil.length} bobinas com sobra${K.filNunca?` · ${brl0(K.filNunca)} sem uso registrado`:''}`)}
+      ${tile('Parado há 60+ dias',brl0(K.parado),`estoque ${brl0(K.estoqueParado)} · filamento ${brl0(K.filParado)}`,K.parado>0?'neg':'')}
+      ${tile('Equivale a',K.meses!=null?`${num(K.meses,1)} ${K.meses>=2?'meses':'mês'}`:'—','de faturamento médio')}
+    </div>
+    <div class="grid g-2" style="margin-top:12px">
+      <div><div class="sec-title sm"><i class="ti ti-box-seam" aria-hidden="true"></i>Estoque parado</div>
+        ${K.estoque.filter(e=>e.parado).length?`<div class="table-wrap"><table class="t"><thead><tr><th>Produto</th><th class="num">Qtd</th><th class="num">A custo</th><th class="num">Sem vender há</th></tr></thead><tbody>
+        ${K.estoque.filter(e=>e.parado).slice(0,10).map(e=>`<tr><td><div class="prod" style="max-width:210px" title="${esc(e.nome)}">${esc(e.nome)}</div></td><td class="num">${num(e.qtd)}</td><td class="num">${brl0(e.custo)}${e.estimado?'*':''}</td><td class="num">${dias(e.vendeu?e.dias:null)}</td></tr>`).join('')}
+        </tbody></table></div>`:'<div class="vazio">Nenhum produto parado.</div>'}</div>
+      <div><div class="sec-title sm"><i class="ti ti-spiral" aria-hidden="true"></i>Bobinas sem uso</div>
+        ${K.fil.filter(f=>f.parado||f.nunca).length?`<div class="table-wrap"><table class="t"><thead><tr><th>Filamento</th><th class="num">Sobra</th><th class="num">Valor</th><th class="num">Último uso</th></tr></thead><tbody>
+        ${K.fil.filter(f=>f.parado||f.nunca).slice(0,10).map(f=>`<tr><td><div class="prod" style="max-width:210px" title="${esc(f.nome)}">${esc(f.nome)}</div></td><td class="num">${num(f.rest)} g</td><td class="num">${brl0(f.valor)}</td><td class="num">${f.nunca?'sem registro':`há ${f.dias} dias`}</td></tr>`).join('')}
+        </tbody></table></div>`:'<div class="vazio">Todas as bobinas foram usadas recentemente.</div>'}</div>
+    </div>
+    <p class="hint">* custo estimado pela proporção média, porque o produto não está na Precificação. Bobinas "sem registro" podem ser novas: elas não entram no total parado.</p>
+  </section>`;
+}
+
+function secImpressoras(){
+  const cards=M.imps.map(i=>{
+    const p=i.valor?clamp(i.recuperado/i.valor):0, pPrev=i.valor?clamp(i.previsto/i.valor):0;
+    const quita=i.falta<=0?'já se pagou':i.eta==null?'sem vendas registradas':`em ${num(i.eta)} meses (${addMeses(HOJE,i.eta)})`;
+    return `<div class="imp">
+      <div class="imp-h"><span class="imp-n">${esc(i.nome)}</span>${i.falta<=0?badgeNivel('ok','Paga'):i.recuperado<=0?badgeNivel('warn','Sem retorno ainda'):i.recuperado<i.previsto*0.75?badgeNivel('warn','Atrasada'):badgeNivel('ok','No plano')}</div>
+      <div class="kv" style="margin-top:0"><span>Retorno embutido nas vendas</span><b>${brl0(i.recuperado)} de ${brl0(i.valor)}</b></div>
+      <div class="meter" style="margin:8px 0 4px;height:10px" role="img" aria-label="${pct(p)} recuperado"><span style="width:${(p*100).toFixed(1)}%;background:var(--s1)"></span></div>
+      <div class="kv" style="margin-top:2px"><span>${pct(p)} recuperado</span><span>plano até hoje: ${pct(pPrev)}</span></div>
+      <div class="kv"><span>Ritmo atual</span><b>${brl0(i.ritmo)}/mês</b></div>
+      <div class="kv"><span>Meta do plano (${i.meses} meses)</span><b>${brl0(i.meta)}/mês</b></div>
+      <div class="kv"><span>Se paga</span><b>${quita}</b></div>
+      <div class="kv"><span>Uso nos últimos 30 dias</span><b>${num(i.horas30)} h de ${num(i.cap)} h (${pct(i.uso)})</b></div>
+      <div class="kv"><span>Desde</span><b>${dataBR(i.inicio)}${i.pago?` · pago ${brl0(i.pago)}`:''}</b></div>
+    </div>`;
+  }).join('');
+  return `<section class="card" id="mod-impressoras">
+    ${cabecalho('ti-printer','Retorno das impressoras','"Retorno embutido" é a soma das parcelas de retorno do investimento e de depreciação que a Precificação colocou no preço de cada peça vendida. A meta é o valor da impressora dividido pelos meses de retorno cadastrados.')}
+    <div class="imp-grid">${cards}</div>
+    <div class="tiles" style="margin-top:12px">${tile('Patrimônio total investido',brl0(M.patrimonioTotal),`${D.patrimonio.length} itens cadastrados no CRM`)}</div>
+    <p class="hint">A Precificação supõe que cada impressora roda as horas por dia e os dias por mês do cadastro. Se ela roda menos, cada hora deveria carregar uma parte maior do retorno, ou o prazo de retorno fica maior.</p>
+  </section>`;
+}
+function addMeses(d,m){const x=new Date(d.getFullYear(),d.getMonth()+Math.round(m),1);return nomeMes(ymOf(x));}
+
+function telaVazia(){
+  return `<section class="card"><div class="empty">
+    <i class="ti ti-database-off big" aria-hidden="true"></i>
+    <h2>Não achei os dados do CRM neste navegador</h2>
+    <p>Este painel lê os dados que o CRM salva no navegador. Abra-o pelo mesmo endereço do CRM (o arquivo financeiro.html fica ao lado do index.html), busque no Google Drive ou abra um backup .json exportado pelo CRM.</p>
+    <div class="acts">
+      <button class="btn btn-primary" data-acao="drive"><i class="ti ti-cloud-download" aria-hidden="true"></i>Buscar no Google Drive</button>
+      <button class="btn" data-acao="importar"><i class="ti ti-upload" aria-hidden="true"></i>Abrir backup .json</button>
+      <a class="btn" href="index.html"><i class="ti ti-arrow-back-up" aria-hidden="true"></i>Abrir o CRM</a>
+    </div></div></section>`;
+}
+
+// ══════════════════════════════════════════════
+// ══ RENDER ══
+// ══════════════════════════════════════════════
+function mesesDisponiveis(){
+  const s=new Set([ymOf(HOJE)]);
+  if(D){
+    for(const v of D.vendas){const d=dt(v.data);if(d)s.add(ymOf(d));}
+    for(const x of D.saidas){const d=dt(x.venc)||dt(x.data);if(d&&d<=HOJE)s.add(ymOf(d));}
+  }
+  return [...s].filter(y=>y<=ymOf(HOJE)).sort().reverse();
+}
+function atualizarTopo(){
+  const sel=document.getElementById('sel-mes'), ms=mesesDisponiveis();
+  if(!mesRef||!ms.includes(mesRef)) mesRef=ms[0];
+  sel.innerHTML=ms.map(m=>`<option value="${m}"${m===mesRef?' selected':''}>${nomeMes(m,true)}</option>`).join('');
+  const ft=document.getElementById('fonte-txt');
+  if(!D) ft.textContent='Honey Prints 3D · sem dados';
+  else{
+    const q=fonte.quando?new Date(fonte.quando):null;
+    ft.textContent=`Honey Prints 3D · dados de ${fonte.nome}${q&&!isNaN(q)?' · '+q.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):''}`;
+  }
+}
+function render(){
+  atualizarTopo();
+  const app=document.getElementById('app');
+  GRAF={}; grafSeq=0;
+  if(!D){app.innerHTML=telaVazia();return;}
+  try{
+    calcular();
+    app.innerHTML=secDiagnostico()+secEquilibrio()+secProdutos()+secCaixa()+secFolha()+secVendas()+secABC()+secCapital()+secImpressoras();
+    desenharGraficos();
+  }catch(e){
+    console.error(e);
+    app.innerHTML=`<section class="card"><div class="empty"><i class="ti ti-bug big" aria-hidden="true"></i><h2>Não consegui montar o painel</h2><p>${esc(e.message)}</p></div></section>`;
+  }
+  if(document.getElementById('dlg').open) renderDialogo();
+}
+
+// ══════════════════════════════════════════════
+// ══ CUSTOS FIXOS, SALDO E METAS (diálogo) ══
+// ══════════════════════════════════════════════
+let editando=null;
+function renderDialogo(foco){
+  const dlg=document.getElementById('dlg');
+  const sug=sugestoesFixos();
+  const c=editando?F.custos.find(x=>x.id===editando):null;
+  const ativos=F.custos.filter(x=>x.ativo!==false), total=soma(ativos.filter(x=>!x.fim||x.fim>=ymOf(HOJE)),x=>+x.valor);
+  dlg.innerHTML=`
+    <div class="dlg-h"><div class="sec-title"><i class="ti ti-adjustments" aria-hidden="true"></i>Custos fixos, salários e saldo</div><button class="btn btn-ghost btn-sm" data-acao="fechar" aria-label="Fechar"><i class="ti ti-x" aria-hidden="true"></i></button></div>
+    <div class="dlg-b">
+      ${sug.length?`<div class="sec-title sm" style="margin-top:0"><i class="ti ti-wand" aria-hidden="true"></i>Gastos que se repetem nas Saídas</div>
+        <p class="hint" style="margin:0 0 8px">Já estão lançados no CRM. Ao adicionar, eles contam no ponto de equilíbrio sem duplicar no caixa.</p>
+        ${sug.map(s=>`<div class="sug"><div class="sug-t">${esc(s.desc)}<small>${brl(s.valor)} por mês · ${s.meses.size} meses nas Saídas · vira "${esc(s.catFixo)}"</small></div>
+          <button class="btn btn-sm" data-acao="sug-add" data-alvo="${esc(s.chave)}"><i class="ti ti-plus" aria-hidden="true"></i>Adicionar</button>
+          <button class="btn btn-sm btn-ghost" data-acao="sug-ign" data-alvo="${esc(s.chave)}">Ignorar</button></div>`).join('')}`:''}
+      <div class="sec-title sm"><i class="ti ti-list-details" aria-hidden="true"></i>Custos fixos mensais ${ativos.length?`<span class="badge b-neutro">${brl(total)} por mês</span>`:''}</div>
+      ${F.custos.length?`<div class="table-wrap"><table class="t"><thead><tr><th>Descrição</th><th>Categoria</th><th class="num">Valor</th><th class="num">Dia</th><th class="num">Vigência</th><th></th></tr></thead><tbody>
+        ${F.custos.map(x=>`<tr style="${x.ativo===false?'opacity:.55':''}"><td>${esc(x.desc)}${x.vinculo?' <span class="badge b-neutro" title="Já lançado em Saídas no CRM">nas Saídas</span>':''}</td><td>${esc(x.cat)}</td><td class="num">${brl(+x.valor)}</td><td class="num">${x.dia||'—'}</td><td class="num">${x.inicio?nomeMes(x.inicio):'sempre'}${x.fim?' a '+nomeMes(x.fim):''}</td>
+          <td class="num"><button class="btn btn-ghost btn-sm" data-acao="fx-edit" data-alvo="${x.id}" aria-label="Editar"><i class="ti ti-pencil" aria-hidden="true"></i></button><button class="btn btn-ghost btn-sm" data-acao="fx-del" data-alvo="${x.id}" aria-label="Excluir"><i class="ti ti-trash" aria-hidden="true"></i></button></td></tr>`).join('')}
+      </tbody></table></div>`:'<div class="vazio">Nenhum custo fixo ainda.</div>'}
+      <div class="sec-title sm"><i class="ti ti-${c?'pencil':'plus'}" aria-hidden="true"></i>${c?'Editar custo fixo':'Novo custo fixo'}</div>
+      <div class="form-grid">
+        <div class="fg" style="grid-column:span 2"><label for="fx-desc">Descrição</label><input id="fx-desc" maxlength="80" placeholder="Pró-labore Eduardo" value="${esc(c?c.desc:'')}"></div>
+        <div class="fg"><label for="fx-cat">Categoria</label><select id="fx-cat">${CATS_FIXOS.map(k=>`<option${(c?c.cat:'Pró-labore')===k?' selected':''}>${k}</option>`).join('')}</select></div>
+        <div class="fg"><label for="fx-valor">Valor por mês (R$)</label><input id="fx-valor" type="number" min="0" step="0.01" inputmode="decimal" placeholder="1500,00" value="${c?c.valor:''}"></div>
+        <div class="fg"><label for="fx-dia">Dia do pagamento</label><input id="fx-dia" type="number" min="1" max="31" placeholder="10" value="${c&&c.dia?c.dia:''}"></div>
+        <div class="fg"><label for="fx-ini">Desde (opcional)</label><input id="fx-ini" type="month" value="${c&&c.inicio?c.inicio:''}"></div>
+        <div class="fg"><label for="fx-fim">Até (opcional)</label><input id="fx-fim" type="month" value="${c&&c.fim?c.fim:''}"></div>
+        <label class="fg fg-check" style="grid-column:span 2"><input type="checkbox" id="fx-vinc" ${c&&c.vinculo?'checked':''}> Já lanço este custo em Saídas no CRM, com esta mesma descrição</label>
+      </div>
+      <div class="err" id="fx-err" hidden></div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <button class="btn btn-primary" data-acao="fx-salvar"><i class="ti ti-check" aria-hidden="true"></i>${c?'Salvar alterações':'Adicionar custo'}</button>
+        ${c?'<button class="btn" data-acao="fx-cancelar">Cancelar</button>':''}
+      </div>
+      <p class="hint">Salários e pró-labore também alimentam o módulo de folha. Parcelas de impressora não entram aqui: o retorno delas já está no custo de cada peça.</p>
+
+      <div class="sec-title sm" id="bloco-saldo"><i class="ti ti-wallet" aria-hidden="true"></i>Saldo em caixa</div>
+      <div class="form-grid">
+        <div class="fg"><label for="sd-valor">Saldo (R$)</label><input id="sd-valor" type="number" step="0.01" inputmode="decimal" placeholder="850,00" value="${F.saldo&&F.saldo.valor!=null?F.saldo.valor:''}"></div>
+        <div class="fg"><label for="sd-data">Na data</label><input id="sd-data" type="date" value="${F.saldo&&F.saldo.data?F.saldo.data:ymOf(HOJE)+'-'+String(HOJE.getDate()).padStart(2,'0')}"></div>
+        <div class="fg"><label for="mt-margem">Meta de margem econômica (%)</label><input id="mt-margem" type="number" min="0" max="95" step="1" value="${+F.metaMargem||30}"></div>
+        <div class="fg"><button class="btn" data-acao="sd-salvar"><i class="ti ti-device-floppy" aria-hidden="true"></i>Salvar saldo e meta</button></div>
+      </div>
+      <div class="err" id="sd-err" hidden></div>
+      <p class="hint">Informe o saldo de um dia qualquer (conta da empresa + caixinha). O painel soma o que entrou e saiu depois disso para chegar no saldo de hoje.</p>
+    </div>`;
+  if(foco==='saldo') setTimeout(()=>{document.getElementById('bloco-saldo').scrollIntoView({block:'start'});document.getElementById('sd-valor').focus();},30);
+}
+function abrirDialogo(foco){
+  if(!D){toast('Carregue os dados do CRM primeiro.');return;}
+  editando=null; renderDialogo(foco);
+  const dlg=document.getElementById('dlg'); if(!dlg.open) dlg.showModal();
+}
+function erro(id,msg){const e=document.getElementById(id);e.textContent=msg;e.hidden=!msg;}
+function salvarCusto(){
+  const desc=document.getElementById('fx-desc').value.trim();
+  const valor=parseFloat(String(document.getElementById('fx-valor').value).replace(',','.'));
+  const dia=parseInt(document.getElementById('fx-dia').value)||null;
+  const ini=document.getElementById('fx-ini').value||null, fim=document.getElementById('fx-fim').value||null;
+  if(!desc) return erro('fx-err','Escreva uma descrição.');
+  if(!(valor>0)) return erro('fx-err','Informe um valor maior que zero.');
+  if(dia&&(dia<1||dia>31)) return erro('fx-err','O dia precisa estar entre 1 e 31.');
+  if(ini&&fim&&fim<ini) return erro('fx-err','O mês final é antes do inicial.');
+  const vinc=document.getElementById('fx-vinc').checked;
+  const dados={desc,cat:document.getElementById('fx-cat').value,valor:Math.round(valor*100)/100,dia,inicio:ini,fim,ativo:true,vinculo:vinc?norm(desc):null};
+  if(vinc&&!D.saidas.some(s=>norm(s.desc)===dados.vinculo)) toast('Atenção: não achei nenhuma Saída com essa descrição.');
+  if(editando){Object.assign(F.custos.find(x=>x.id===editando),dados);}
+  else F.custos.push(Object.assign({id:uid()},dados));
+  editando=null; salvarFin(); render(); toast('Custo fixo salvo.');
+}
+function salvarSaldo(){
+  const raw=String(document.getElementById('sd-valor').value).trim();
+  const valor=raw===''?null:parseFloat(raw.replace(',','.'));
+  const data=document.getElementById('sd-data').value;
+  const meta=parseFloat(document.getElementById('mt-margem').value);
+  if(raw!==''&&!isFinite(valor)) return erro('sd-err','Saldo inválido.');
+  if(valor!==null&&!dt(data)) return erro('sd-err','Escolha a data do saldo.');
+  if(valor!==null&&dt(data)>HOJE) return erro('sd-err','A data do saldo não pode estar no futuro.');
+  if(!(meta>=0&&meta<=95)) return erro('sd-err','A meta de margem precisa estar entre 0 e 95%.');
+  F.saldo={valor,data:valor===null?null:data}; F.metaMargem=meta;
+  salvarFin(); render(); toast('Saldo e meta salvos.');
+}
+
+// ══════════════════════════════════════════════
+// ══ GOOGLE DRIVE (mesmo app do CRM, pasta appData) ══
+// ══ Lê crm_data.json (nunca escreve nele). Guarda os custos em fin_data.json. ══
+// ══════════════════════════════════════════════
+let tokenClient=null, accessToken=null, tokenExp=0, finFileId=null, driveBusy=false, finTimer=null;
+function setDrive(estado,msg){
+  const b=document.getElementById('btn-drive'); if(!b) return;
+  const ic={off:'ti-cloud',conectando:'ti-loader-2',sinc:'ti-cloud-up',ok:'ti-cloud-check',erro:'ti-cloud-x'}[estado]||'ti-cloud';
+  b.className='btn '+({ok:'drive-ok',erro:'drive-erro',sinc:'drive-sinc',conectando:'drive-sinc'}[estado]||'');
+  b.innerHTML=`<i class="ti ${ic}" aria-hidden="true"></i><span class="lbl">${estado==='ok'?'Drive':estado==='erro'?'Drive':estado==='off'?'Drive':'…'}</span>`;
+  b.title=msg||{off:'Buscar os dados mais novos no Google Drive',conectando:'Conectando…',sinc:'Sincronizando…',ok:'Sincronizado com o Google Drive (clique para atualizar)',erro:'Erro no Google Drive'}[estado];
+}
+function driveInit(){
+  if(!window.google||!google.accounts||!google.accounts.oauth2){setTimeout(driveInit,300);return;}
+  tokenClient=google.accounts.oauth2.initTokenClient({client_id:GDRIVE_CLIENT_ID,scope:GDRIVE_SCOPE,callback:onToken,
+    error_callback:()=>setDrive('erro','Login cancelado ou bloqueado')});
+  // Se o CRM já está conectado ao Drive neste navegador, tenta sem pedir login de novo
+  if(localStorage.getItem('p3d_v2_gdrive_on')==='1'){setDrive('conectando');tokenClient.requestAccessToken({prompt:''});}
+  else setDrive('off');
+}
+async function onToken(resp){
+  if(resp.error){setDrive('erro','Não autorizado');return;}
+  accessToken=resp.access_token; tokenExp=Date.now()+(resp.expires_in*1000-60000);
+  await driveSincronizar();
+}
+function driveClick(){
+  if(!tokenClient){toast('Carregando o Google, aguarde um instante…');return;}
+  if(accessToken&&Date.now()<tokenExp){driveSincronizar();return;}
+  tokenClient.requestAccessToken({prompt:localStorage.getItem('p3d_v2_gdrive_on')==='1'?'':'consent'});
+}
+async function driveFetch(url,opt={}){
+  const r=await fetch(url,Object.assign({},opt,{headers:Object.assign({},opt.headers||{},{Authorization:'Bearer '+accessToken})}));
+  if(!r.ok) throw new Error('Google Drive respondeu '+r.status);
+  return r;
+}
+async function driveAchar(nome){
+  const q=encodeURIComponent(`name='${nome}'`);
+  const j=await (await driveFetch(`https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=${q}&fields=files(id,modifiedTime)`)).json();
+  return (j.files&&j.files[0])||null;
+}
+async function driveBaixar(id){return (await driveFetch(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`)).json();}
+async function driveGravarFin(){
+  const body=JSON.stringify(F);
+  if(finFileId) return (await driveFetch(`https://www.googleapis.com/upload/drive/v3/files/${finFileId}?uploadType=media`,{method:'PATCH',headers:{'Content-Type':'application/json'},body})).json();
+  const bd='p3dfinboundary', meta={name:FIN_FILE,parents:['appDataFolder']};
+  const corpo=`--${bd}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(meta)}\r\n--${bd}\r\nContent-Type: application/json\r\n\r\n${body}\r\n--${bd}--`;
+  return (await driveFetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart',{method:'POST',headers:{'Content-Type':`multipart/related; boundary=${bd}`},body:corpo})).json();
+}
+async function driveSincronizar(){
+  if(driveBusy) return; driveBusy=true; setDrive('sinc');
+  try{
+    const crm=await driveAchar(CRM_FILE);
+    if(crm){
+      const tNuvem=Date.parse(crm.modifiedTime)||0, tLocal=fonte.tipo==='local'&&fonte.quando?Date.parse(fonte.quando)||0:0;
+      if(!D||fonte.tipo==='arquivo'||tNuvem>tLocal+2000){
+        const d=await driveBaixar(crm.id);
+        if(Array.isArray(d.vendas)){usarDados(d,{tipo:'drive',quando:crm.modifiedTime,nome:'Google Drive'});toast('Dados do CRM atualizados do Google Drive.');}
+      }else toast('Os dados deste navegador já são os mais novos.');
+    }else if(!D) toast('Não achei dados do CRM no Google Drive desta conta.');
+    const fin=await driveAchar(FIN_FILE);
+    if(fin){
+      finFileId=fin.id;
+      const nf=await driveBaixar(fin.id), tn=Date.parse(nf&&nf.updatedAt)||0, tl=Date.parse(F.updatedAt)||0;
+      if(tn>tl){F=Object.assign(finPadrao(),nf);try{localStorage.setItem(FIN_KEY,JSON.stringify(F));}catch(e){}render();}
+      else if(tl>tn) finFileId=(await driveGravarFin()).id||finFileId;
+    }else if(F.updatedAt) finFileId=(await driveGravarFin()).id||finFileId;
+    setDrive('ok');
+  }catch(e){console.warn('Drive:',e);setDrive('erro','Erro ao sincronizar com o Google Drive');}
+  driveBusy=false;
+}
+function driveEnviarFin(){
+  if(!accessToken) return;
+  clearTimeout(finTimer);
+  finTimer=setTimeout(async()=>{
+    if(Date.now()>tokenExp){tokenClient.requestAccessToken({prompt:''});return;} // o callback sincroniza
+    try{setDrive('sinc');finFileId=(await driveGravarFin()).id||finFileId;setDrive('ok');}
+    catch(e){console.warn('Drive:',e);setDrive('erro','Não consegui salvar os custos no Drive (ficaram salvos neste navegador)');}
+  },1000);
+}
+
+// ══════════════════════════════════════════════
+// ══ EVENTOS ══
+// ══════════════════════════════════════════════
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-acao]'); if(!b) return;
+  const a=b.dataset.acao, alvo=b.dataset.alvo;
+  if(a==='ir'){const el=document.querySelector(alvo);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+  else if(a==='fixos') abrirDialogo(alvo);
+  else if(a==='drive') driveClick();
+  else if(a==='importar') document.getElementById('arquivo').click();
+  else if(a==='fechar') document.getElementById('dlg').close();
+  else if(a==='fx-salvar') salvarCusto();
+  else if(a==='fx-cancelar'){editando=null;renderDialogo();}
+  else if(a==='fx-edit'){editando=alvo;renderDialogo();setTimeout(()=>document.getElementById('fx-desc').focus(),20);}
+  else if(a==='fx-del'){const c=F.custos.find(x=>x.id===alvo);if(c&&confirm(`Excluir "${c.desc}"?`)){F.custos=F.custos.filter(x=>x.id!==alvo);salvarFin();render();}}
+  else if(a==='sug-add'){
+    const s=sugestoesFixos().find(x=>x.chave===alvo); if(!s) return;
+    F.custos.push({id:uid(),desc:s.desc,cat:s.catFixo,valor:Math.round(s.valor*100)/100,dia:s.dia,inicio:null,fim:null,ativo:true,vinculo:s.chave});
+    salvarFin(); render(); toast(`"${s.desc}" adicionado aos custos fixos.`);
+  }
+  else if(a==='sug-ign'){F.ignorados=(F.ignorados||[]).concat(alvo);salvarFin();renderDialogo();}
+  else if(a==='sd-salvar') salvarSaldo();
+});
+document.addEventListener('input',e=>{
+  if(e.target.closest('#dlg')){erro('fx-err','');erro('sd-err','');}
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='sel-mes'){mesRef=e.target.value;render();}
+  if(e.target.id==='chk-prev'){F.previsaoVendas=e.target.checked;salvarFin();render();}
+});
+document.getElementById('arquivo').addEventListener('change',async e=>{
+  const f=e.target.files[0]; e.target.value=''; if(!f) return;
+  try{
+    const d=JSON.parse(await f.text());
+    if(!Array.isArray(d.vendas)) throw new Error('O arquivo não parece um backup do CRM (faltam as vendas).');
+    usarDados(d,{tipo:'arquivo',quando:f.lastModified?new Date(f.lastModified).toISOString():null,nome:f.name});
+    toast('Backup carregado. Nada foi gravado no CRM.');
+  }catch(err){toast('Não consegui abrir o arquivo: '+err.message);}
+});
+// Atualiza sozinho quando o CRM, aberto em outra aba, salva algo
+window.addEventListener('storage',e=>{
+  if(e.key===CRM_KEY&&(fonte.tipo==='local'||!D)) carregarLocal();
+  if(e.key===FIN_KEY){F=carregarFin();render();}
+});
+let rsz=null;
+window.addEventListener('resize',()=>{clearTimeout(rsz);rsz=setTimeout(()=>{if(M)desenharGraficos();},150);});
+
+if(!carregarLocal()) render();
+</script>
+<script src="https://accounts.google.com/gsi/client" async defer onload="driveInit()"></script>
+</body>
+</html>
